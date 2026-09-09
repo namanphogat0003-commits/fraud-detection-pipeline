@@ -1,0 +1,23 @@
+# Week 1
+pandas
+numpy
+sqlalchemy
+matplotlib
+seaborn
+jupyter
+
+# Week 2-3 (modeling)
+scikit-learn
+xgboost
+lightgbm
+imbalanced-learn
+shap
+optuna
+
+# Week 3 (autoencoder) - pick one
+tensorflow
+# torch
+
+# Week 4 (deployment)
+fastapi
+uvicorn
