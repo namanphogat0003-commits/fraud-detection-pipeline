@@ -104,17 +104,56 @@ scored transactions recovers versus picking K at random.
 |---|---|---|---|---|---|
 | 100 | 0.01% | 100 | 12.1% | 1.000 | **987x** |
 | 500 | 0.06% | 497 | 36.1% | 0.994 | 591x |
-| 1,000 | 0.12% | 825 | 47.9% | 0.825 | 392x |
-| 5,000 | 0.61% | 1,473 | 83.9% | 0.295 | 137x |
+| 1,000 | 0.12% | 792 | 43.4% | 0.792 | 355x |
+| 5,000 | 0.61% | 1,472 | 83.9% | 0.294 | 137x |
 | 25,000 | 3.05% | 3,256 | 96.0% | 0.130 | 31x |
 
 Total fraud exposure in the test window is 7,075,665,126. Reviewing **1,000 of 818,514
-transactions — 0.12% of volume — recovers 47.9% of it**, and the first 100 reviews are
+transactions — 0.12% of volume — recovers 43.4% of it**, and the first 100 reviews are
 100% precise.
 
 This is the gap between a metric and a decision. A 0.3260 PR-AUC sounds like a failed
-model; the same model at a realistic queue size is a 392x improvement on random
+model; the same model at a realistic queue size is a 355x improvement on random
 selection. Which framing is correct depends on what the model is for.
+
+One implementation detail worth naming: the model assigns many transactions *identical*
+scores, so "top 1,000" is ambiguous unless the tie-break is specified — different sort
+implementations shift the reported catch rate by several percent with no change to the
+model. Ties here are broken by transaction amount descending: at equal risk, the larger
+exposure is reviewed first.
+
+---
+
+## Scoring service
+
+The leak-free model is served behind a FastAPI endpoint. Every response carries the SHAP
+contributions behind the score, because a bare probability gives an analyst no basis to
+act — "0.83" is not a reason to freeze an account, but "0.83, driven by a large transfer
+into a previously-empty destination account" is something a human can verify.
+
+```bash
+python src/build_api_bundle.py      # package model + destination-frequency map
+python -m uvicorn src.api.main:app  # then open http://127.0.0.1:8000/docs
+```
+
+```
+POST /score
+{"type": "TRANSFER", "amount": 1500000, "nameDest": "C999999999", "oldbalanceDest": 0}
+
+→ {"fraud_probability": 0.956,
+   "risk_band": "high",
+   "drivers": [{"feature": "oldbalanceDest", "shap_contribution": 1.5678,
+                "direction": "increases risk"}, ...],
+   "caveat": "... Suitable for ranking a manual review queue; not for automated blocking."}
+```
+
+The service deliberately serves **Track D**, not Track A. Track A would demo at a perfect
+1.0000, but it reaches that by reading a leaked label — shipping it would undo the point
+of the audit. Each response states the model's real holdout PR-AUC rather than letting a
+caller assume it is better than it is.
+
+`/health` reports what is loaded and how it scored; `/score/batch` ranks up to 1,000
+transactions at once.
 
 ---
 
@@ -147,7 +186,13 @@ src/
   features.py      four nested feature sets, one per artifact removed
   train.py         temporal split, training, evaluation across all tracks
   evaluate.py      metrics and plots
+  advanced_models.py  XGBoost tuning, IsolationForest, SHAP, capacity analysis
+  build_api_bundle.py packages model + frequency map for serving
+  score_batch.py      scores the holdout window into a Power BI feed
+  api/main.py         FastAPI scoring service
   queries.sql      the SQL behind the Week 1 findings
+dashboard/
+  README.md        Power BI build guide, with DAX measures
 reports/
   eda_findings.md    Week 1 - dataset characteristics and the first leak
   week2_results.md   Week 2 - the full leakage audit
@@ -198,4 +243,4 @@ Simulator: [github.com/EdgarLopezPhD/PaySim](https://github.com/EdgarLopezPhD/Pa
 - [x] Week 1 - data pipeline and exploratory analysis
 - [x] Week 2 - baseline models and leakage audit
 - [x] Week 3 - gradient boosting, unsupervised detection, SHAP, and review-capacity analysis
-- [ ] Week 4 - FastAPI scoring service and Power BI monitoring dashboard
+- [x] Week 4 - FastAPI scoring service and Power BI monitoring dashboard
