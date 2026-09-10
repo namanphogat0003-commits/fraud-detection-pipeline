@@ -9,3 +9,5 @@ models/*.pkl
 models/*.h5
 *.part
 _to_delete/
+data/processed/*.csv
+models/*.joblib

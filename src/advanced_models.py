@@ -118,7 +118,12 @@ def capacity_analysis(y_true, y_score, amounts, budgets):
     This is where a weak model can still earn its keep: even poor ranking beats
     random selection, and the lift is the number an ops manager can act on.
     """
-    order = np.argsort(-y_score)
+    # The model produces many tied scores, so "top K" is ambiguous unless the
+    # tie-break is specified - different sort implementations can shift the
+    # reported catch rate by several percent. Ties are broken by amount
+    # descending: at equal risk, review the larger exposure first. lexsort takes
+    # its LAST key as primary.
+    order = np.lexsort((-amounts, -y_score))
     fraud_total = amounts[y_true == 1].sum()
     n_fraud = int(y_true.sum())
     n_total = len(y_true)

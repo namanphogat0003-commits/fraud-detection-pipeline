@@ -19,7 +19,7 @@
         "n_estimators": 300
       },
       "validation_pr_auc": 1.0,
-      "fit_seconds": 1.9
+      "fit_seconds": 3.3
     },
     {
       "model": "XGBoost - Track B (no origin drain)",
@@ -40,7 +40,7 @@
         "n_estimators": 300
       },
       "validation_pr_auc": 0.792,
-      "fit_seconds": 3.1
+      "fit_seconds": 4.2
     },
     {
       "model": "XGBoost - Track C (no destination leak)",
@@ -61,7 +61,7 @@
         "n_estimators": 300
       },
       "validation_pr_auc": 0.4021,
-      "fit_seconds": 2.3
+      "fit_seconds": 3.3
     },
     {
       "model": "XGBoost - Track D (no timing artifact)",
@@ -82,7 +82,7 @@
         "n_estimators": 300
       },
       "validation_pr_auc": 0.2136,
-      "fit_seconds": 2.4
+      "fit_seconds": 3.9
     },
     {
       "model": "IsolationForest (unsupervised, Track D)",
@@ -132,36 +132,36 @@
     },
     {
       "budget": 1000,
-      "caught_n": 825,
-      "caught_pct": 18.052516411378555,
-      "caught_amt": 3390268565.9400005,
-      "caught_amt_pct": 47.91448585737511,
+      "caught_n": 792,
+      "caught_pct": 17.330415754923415,
+      "caught_amt": 3072905084.83,
+      "caught_amt_pct": 43.42920460854983,
       "random_n": 5.583288740326982,
       "random_amt_pct": 0.122172620138446,
-      "lift": 392.18677477063534,
-      "precision": 0.825
+      "lift": 355.47411980962556,
+      "precision": 0.792
     },
     {
       "budget": 5000,
-      "caught_n": 1473,
-      "caught_pct": 32.23194748358862,
-      "caught_amt": 5939199054.79,
-      "caught_amt_pct": 83.93838528717531,
+      "caught_n": 1472,
+      "caught_pct": 32.21006564551422,
+      "caught_amt": 5939184488.2300005,
+      "caught_amt_pct": 83.9381794187553,
       "random_n": 27.916443701634915,
       "random_amt_pct": 0.61086310069223,
-      "lift": 137.40948698989402,
-      "precision": 0.2946
+      "lift": 137.40914997752614,
+      "precision": 0.2944
     },
     {
       "budget": 10000,
-      "caught_n": 2022,
-      "caught_pct": 44.245076586433264,
-      "caught_amt": 6297430902.59,
-      "caught_amt_pct": 89.00125699519157,
+      "caught_n": 2027,
+      "caught_pct": 44.354485776805255,
+      "caught_amt": 6304147977.45,
+      "caught_amt_pct": 89.09618905798322,
       "random_n": 55.83288740326983,
       "random_amt_pct": 1.22172620138446,
-      "lift": 72.84877486816222,
-      "precision": 0.2022
+      "lift": 72.92647809060607,
+      "precision": 0.2027
     },
     {
       "budget": 25000,
@@ -190,9 +190,9 @@
   "break_even_review_cost": [
     8531120.9168,
     5107244.6694600005,
-    3390268.5659400006,
-    1187839.810958,
-    629743.090259,
+    3072905.08483,
+    1187836.8976460001,
+    630414.797745,
     271740.9350216,
     137609.49525459998
   ]

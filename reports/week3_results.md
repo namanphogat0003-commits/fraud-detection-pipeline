@@ -72,25 +72,25 @@ actually act on.
 |---|---|---|---|---|
 | 100 | 100 | 12.1% | 1.000 | 986.9x |
 | 500 | 497 | 36.1% | 0.994 | 590.8x |
-| 1,000 | 825 | 47.9% | 0.825 | 392.2x |
-| 5,000 | 1,473 | 83.9% | 0.295 | 137.4x |
-| 10,000 | 2,022 | 89.0% | 0.202 | 72.8x |
+| 1,000 | 792 | 43.4% | 0.792 | 355.5x |
+| 5,000 | 1,472 | 83.9% | 0.294 | 137.4x |
+| 10,000 | 2,027 | 89.1% | 0.203 | 72.9x |
 | 25,000 | 3,256 | 96.0% | 0.130 | 31.4x |
 | 50,000 | 3,473 | 97.2% | 0.069 | 15.9x |
 
 Total fraud exposure in the test window is **7,075,665,126**. Reviewing the
 1,000 highest-scoring transactions recovers
-**47.9%** of that value at
-**392.2x** the return of reviewing the same number at random.
+**43.4%** of that value at
+**355.5x** the return of reviewing the same number at random.
 
 Break-even framing: at a budget of 1,000 reviews, the queue
-recovers 3,390,269 of fraud value per
+recovers 3,072,905 of fraud value per
 review performed. Any per-review cost below that figure makes the queue profitable -
 which is the form of the answer a fraud operations lead needs, rather than a PR-AUC.
 
 ## Honest summary
 
-On the honest feature set (Track D) the best model reaches **0.3260** PR-AUC against a 0.0056 no-skill floor - 58x better than random, but far below what the leaking feature sets appear to deliver. Judged as a ranker rather than a classifier it is considerably more useful: reviewing the 1,000 highest-scoring transactions (0.12% of the test window) recovers 47.9% of all fraud value.
+On the honest feature set (Track D) the best model reaches **0.3260** PR-AUC against a 0.0056 no-skill floor - 58x better than random, but far below what the leaking feature sets appear to deliver. Judged as a ranker rather than a classifier it is considerably more useful: reviewing the 1,000 highest-scoring transactions (0.12% of the test window) recovers 43.4% of all fraud value.
 
 The value of this project remains the audit that established how much of PaySim's
 apparent difficulty is manufactured, plus an operational framing that says what the
