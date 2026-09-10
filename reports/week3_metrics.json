@@ -19,7 +19,7 @@
         "n_estimators": 300
       },
       "validation_pr_auc": 1.0,
-      "fit_seconds": 2.4
+      "fit_seconds": 1.9
     },
     {
       "model": "XGBoost - Track B (no origin drain)",
@@ -40,7 +40,7 @@
         "n_estimators": 300
       },
       "validation_pr_auc": 0.792,
-      "fit_seconds": 3.2
+      "fit_seconds": 3.1
     },
     {
       "model": "XGBoost - Track C (no destination leak)",
@@ -61,7 +61,7 @@
         "n_estimators": 300
       },
       "validation_pr_auc": 0.4021,
-      "fit_seconds": 2.5
+      "fit_seconds": 2.3
     },
     {
       "model": "XGBoost - Track D (no timing artifact)",

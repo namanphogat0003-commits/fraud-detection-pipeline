@@ -46,6 +46,7 @@ from features import (
     build_features, subsample_majority,
 )
 
+WEEK2_JSON = os.path.join("reports", "week2_metrics.json")
 DEFAULT_DB = os.path.join("data", "processed", "fraud.db")
 FIG_DIR = os.path.join("reports", "figures")
 MODEL_DIR = "models"
@@ -62,6 +63,23 @@ PARAM_GRID = [
     {"max_depth": 6, "learning_rate": 0.05, "n_estimators": 600},
     {"max_depth": 8, "learning_rate": 0.05, "n_estimators": 400},
 ]
+
+
+def load_week2_best():
+    """Best Week 2 PR-AUC per track, so Week 3 can compare against it rather
+    than asserting a conclusion the numbers may not support."""
+    if not os.path.exists(WEEK2_JSON):
+        return {}
+    with open(WEEK2_JSON, encoding="utf-8") as fh:
+        data = json.load(fh)
+    best = {}
+    for r in data.get("results", []):
+        track = r.get("track")
+        if not track or "pr_auc" not in r:
+            continue
+        if track not in best or r["pr_auc"] > best[track]["pr_auc"]:
+            best[track] = r
+    return best
 
 
 def temporal_validation_split(train_df, val_frac=0.25):
@@ -155,6 +173,7 @@ def main(db_path, review_cost):
     for d in (FIG_DIR, MODEL_DIR, os.path.dirname(RESULTS_MD)):
         os.makedirs(d, exist_ok=True)
 
+    week2 = load_week2_best()
     print("Building features...")
     train_df, test_df, split_step = build_features(db_path)
     fit_df, val_df = temporal_validation_split(train_df)
@@ -275,6 +294,77 @@ def main(db_path, review_cost):
                    "break_even_review_cost": be}, fh, indent=2)
 
     d_row = [r for r in rows if r["track"].startswith("Track D")][0]
+
+    # --- derive the comparison and verdicts from the numbers ----------------
+    no_skill = float(y_test.mean())
+    iso_lift = iso_m["pr_auc"] / no_skill if no_skill else 0.0
+
+    comp_lines = ["| Track | Random Forest (Week 2) | XGBoost (Week 3) | Change |",
+                  "|---|---|---|---|"]
+    improved = {}
+    for r in rows:
+        prev = week2.get(r["track"], {}).get("pr_auc")
+        if prev is None:
+            comp_lines.append(
+                f"| {r['track']} | - | {r['pr_auc']:.4f} | - |")
+            continue
+        delta = r["pr_auc"] - prev
+        improved[r["track"]] = (prev, r["pr_auc"], delta)
+        comp_lines.append(
+            f"| {r['track']} | {prev:.4f} | {r['pr_auc']:.4f} | "
+            f"{delta:+.4f} |")
+    comparison_table = "\n".join(comp_lines)
+
+    d_prev, d_now, d_delta = improved.get(
+        "Track D (no timing artifact)", (None, d_row["pr_auc"], 0.0))
+    if d_prev and d_now > d_prev * 1.25:
+        gb_verdict = (
+            f"Gradient boosting materially outperforms the Random Forest on the "
+            f"honest feature set: **{d_prev:.4f} -> {d_now:.4f}** on Track D, a "
+            f"{d_now / d_prev:.1f}x improvement. So the residual signal after the "
+            f"artifacts are stripped is real but highly non-linear - it needs a "
+            f"model capable of deep interactions to reach, which is why the "
+            f"linear and shallower models found so little of it.\n\n"
+            f"This revises the Week 2 reading. The leakage was doing most of the "
+            f"work, but not all of it.")
+    elif d_prev and d_now < d_prev * 0.9:
+        gb_verdict = (
+            f"Gradient boosting performs *worse* than the Random Forest here "
+            f"({d_prev:.4f} -> {d_now:.4f}), which on this little signal usually "
+            f"means the booster is overfitting the validation window.")
+    else:
+        gb_verdict = (
+            f"Gradient boosting does not meaningfully change the picture on the "
+            f"honest feature set ({d_prev:.4f} -> {d_now:.4f} on Track D). Once "
+            f"the artifacts are gone the signal genuinely is thin, and a stronger "
+            f"learner does not manufacture it.")
+
+    sup = d_row["pr_auc"]
+    if iso_m["pr_auc"] < sup * 0.4:
+        iso_verdict = (
+            f"That is far below the supervised model on identical features "
+            f"({sup:.4f}), so labels are carrying most of the weight. "
+            f"Unsupervised detection is often proposed for fraud on the grounds "
+            f"that it catches novel patterns; on this data it is a weak "
+            f"substitute rather than a replacement, though it still beats "
+            f"random and would have some value where no labels exist at all.")
+    else:
+        iso_verdict = (
+            f"That is close to the supervised model on identical features "
+            f"({sup:.4f}), suggesting most of the residual structure is "
+            f"reachable without labels at all.")
+
+    best_budget = cap_rows[2] if len(cap_rows) > 2 else cap_rows[-1]
+    summary_verdict = (
+        f"On the honest feature set (Track D) the best model reaches "
+        f"**{sup:.4f}** PR-AUC against a {no_skill:.4f} no-skill floor - "
+        f"{sup / no_skill:.0f}x better than random, but far below what the "
+        f"leaking feature sets appear to deliver. Judged as a ranker rather than "
+        f"a classifier it is considerably more useful: reviewing the "
+        f"{best_budget['budget']:,} highest-scoring transactions "
+        f"({100 * best_budget['budget'] / len(test_df):.2f}% of the test window) "
+        f"recovers {best_budget['caught_amt_pct']:.1f}% of all fraud value.")
+
     with open(RESULTS_MD, "w", encoding="utf-8") as fh:
         fh.write(f"""# Week 3 - Gradient boosting, anomaly detection, and cost
 
@@ -290,21 +380,19 @@ period. Tuning against the test window would be a fourth form of leakage.
 
 {metrics_table(rows)}
 
-The honest number is **{d_row['pr_auc']:.4f}** PR-AUC on Track D, against the
-Random Forest's 0.1501 from Week 2. A tuned gradient booster does not rescue this
-dataset: once the artifacts are gone, the signal genuinely is not there.
+### Against the Week 2 Random Forest
 
-That is the finding, not a failure. It says the leakage was doing the work.
+{comparison_table}
+
+{gb_verdict}
 
 ## Can fraud be found without labels?
 
 {metrics_table([iso_m])}
 
 An IsolationForest trained only on legitimate transactions - never shown a fraud
-label - scores **{iso_m['pr_auc']:.4f}** PR-AUC. Unsupervised anomaly detection is
-often proposed for fraud on the grounds that it catches novel patterns; here it
-performs close to the supervised model on the same features, which is consistent
-with there being little exploitable structure left.
+label - scores **{iso_m['pr_auc']:.4f}** PR-AUC against a no-skill floor of
+{no_skill:.4f}, i.e. {iso_lift:.1f}x better than random. {iso_verdict}
 
 ## Where the residual signal lives (SHAP)
 
@@ -353,10 +441,12 @@ which is the form of the answer a fraud operations lead needs, rather than a PR-
 
 ## Honest summary
 
-On the honest feature set this is a weak detector, and no amount of model tuning
-changes that. The value of the project is the audit that established *why*, plus a
-cost framing that says what such a detector is still worth. A stronger result would
-require a dataset whose fraud is not generated by a rule.
+{summary_verdict}
+
+The value of this project remains the audit that established how much of PaySim's
+apparent difficulty is manufactured, plus an operational framing that says what the
+resulting detector is worth in a review queue. Conclusions here characterise the
+simulator, not production fraud.
 """)
 
     print(f"\nWrote {RESULTS_MD}, {RESULTS_JSON}, plots in {FIG_DIR}/")

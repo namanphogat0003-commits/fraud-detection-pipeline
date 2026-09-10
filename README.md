@@ -5,17 +5,22 @@ detection. This project reproduces that result, then demonstrates that **roughly
 it comes from the dataset encoding its own answer**, and establishes what performance
 actually survives once the leakage is removed.
 
-| Track | Artifact removed | PR-AUC | Best model |
+| Track | Artifact removed | Random Forest | XGBoost |
 |---|---|---|---|
-| **A** | nothing — the standard approach | **1.0000** | Random Forest |
-| **B** | origin-side balance drain | **0.7836** | Random Forest |
-| **C** | + destination-balance leak | **0.4229** | Random Forest |
-| **D** | + hour-of-day artifact | **0.1501** | Random Forest |
+| **A** | nothing — the standard approach | 1.0000 | **1.0000** |
+| **B** | origin-side balance drain | 0.7836 | **0.7888** |
+| **C** | + destination-balance leak | 0.4229 | **0.5412** |
+| **D** | + hour-of-day artifact | 0.1501 | **0.3260** |
+
+(PR-AUC on a held-out temporal window; no-skill floor 0.0056.)
 
 Track A achieves a perfect score with **one** false negative and **zero** false positives
 across 818,514 test transactions. That is not a good model — it is a model reading the
-label. Track D is the defensible number: weak in absolute terms, but a **27x lift** over
-the 0.0056 no-skill floor.
+label.
+
+Track D is the defensible number. Gradient boosting more than doubles it over the Random
+Forest (0.1501 → 0.3260), which says the signal surviving the audit is real but strongly
+non-linear — reachable only by a model that can express deep feature interactions.
 
 ---
 
@@ -89,6 +94,30 @@ interactions rather than monotone relationships.
 
 ---
 
+## What it is worth operationally
+
+PR-AUC judges the model as a classifier. A fraud team uses it as a *ranker*, working a
+review queue of fixed size — so the operational question is what reviewing the top-K
+scored transactions recovers versus picking K at random.
+
+| Review budget | % of test window | Frauds caught | % of fraud value | Precision | Lift vs random |
+|---|---|---|---|---|---|
+| 100 | 0.01% | 100 | 12.1% | 1.000 | **987x** |
+| 500 | 0.06% | 497 | 36.1% | 0.994 | 591x |
+| 1,000 | 0.12% | 825 | 47.9% | 0.825 | 392x |
+| 5,000 | 0.61% | 1,473 | 83.9% | 0.295 | 137x |
+| 25,000 | 3.05% | 3,256 | 96.0% | 0.130 | 31x |
+
+Total fraud exposure in the test window is 7,075,665,126. Reviewing **1,000 of 818,514
+transactions — 0.12% of volume — recovers 47.9% of it**, and the first 100 reviews are
+100% precise.
+
+This is the gap between a metric and a decision. A 0.3260 PR-AUC sounds like a failed
+model; the same model at a realistic queue size is a 392x improvement on random
+selection. Which framing is correct depends on what the model is for.
+
+---
+
 ## Method notes
 
 **Temporal split, not random.** A random split lets the model learn from transactions that
@@ -136,6 +165,16 @@ python src/eda.py          # ~30s, Week 1 findings and plots
 python src/train.py        # ~2min, all four tracks
 ```
 
+## Unsupervised detection and SHAP
+
+An IsolationForest trained only on legitimate transactions — never shown a fraud label —
+reaches 0.0277 PR-AUC, roughly 5x random but about 12x worse than the supervised model on
+identical features. On this data, labels are doing most of the work.
+
+SHAP on the Track D model ranks `oldbalanceDest` (1.22) well ahead of `is_transfer` (0.82)
+and `log_amount` (0.77), with `dest_is_frequent` contributing exactly zero — a feature
+worth dropping.
+
 ## Limitations
 
 `log_amount` remains in Track D and is still partly downstream of the drain mechanic, since
@@ -158,5 +197,5 @@ Simulator: [github.com/EdgarLopezPhD/PaySim](https://github.com/EdgarLopezPhD/Pa
 
 - [x] Week 1 - data pipeline and exploratory analysis
 - [x] Week 2 - baseline models and leakage audit
-- [ ] Week 3 - gradient boosting and SHAP explainability on the leak-free feature set
+- [x] Week 3 - gradient boosting, unsupervised detection, SHAP, and review-capacity analysis
 - [ ] Week 4 - FastAPI scoring service and Power BI monitoring dashboard
