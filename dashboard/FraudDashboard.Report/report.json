@@ -1,0 +1,212 @@
+{
+  "id": 0,
+  "resourcePackages": [
+    {
+      "resourcePackage": {
+        "disabled": false,
+        "items": [
+          {
+            "name": "FraudAudit",
+            "path": "FraudAudit.json",
+            "type": 202
+          }
+        ],
+        "name": "RegisteredResources",
+        "type": 1
+      }
+    }
+  ],
+  "sections": [
+    {
+      "id": 0,
+      "name": "ReportSectionOps",
+      "displayName": "Operations",
+      "filters": "[]",
+      "ordinal": 0,
+      "visualContainers": [
+        {
+          "x": 0,
+          "y": 0,
+          "z": 0,
+          "width": 1280,
+          "height": 76,
+          "config": "{\"name\": \"509238942cad4fc69e43\", \"layouts\": [{\"id\": 0, \"position\": {\"x\": 0, \"y\": 0, \"z\": 0, \"width\": 1280, \"height\": 76}}], \"singleVisual\": {\"visualType\": \"textbox\", \"drillFilterOtherVisuals\": true, \"objects\": {\"general\": [{\"properties\": {\"paragraphs\": [{\"horizontalTextAlignment\": \"left\", \"textRuns\": [{\"value\": \" \", \"textStyle\": {\"fontFamily\": \"Segoe UI\", \"fontSize\": \"1pt\", \"fontWeight\": \"normal\", \"color\": \"#0B0B0B\"}}]}]}}]}, \"vcObjects\": {\"background\": [{\"properties\": {\"show\": {\"expr\": {\"Literal\": {\"Value\": \"true\"}}}, \"color\": {\"solid\": {\"color\": {\"expr\": {\"Literal\": {\"Value\": \"'#0B0B0B'\"}}}}}, \"transparency\": {\"expr\": {\"Literal\": {\"Value\": \"0D\"}}}}}], \"border\": [{\"properties\": {\"show\": {\"expr\": {\"Literal\": {\"Value\": \"false\"}}}}}], \"title\": [{\"properties\": {\"show\": {\"expr\": {\"Literal\": {\"Value\": \"false\"}}}}}], \"visualHeader\": [{\"properties\": {\"show\": {\"expr\": {\"Literal\": {\"Value\": \"false\"}}}}}]}}}",
+          "filters": "[]"
+        },
+        {
+          "x": 12,
+          "y": 14,
+          "z": 1,
+          "width": 1232,
+          "height": 30,
+          "config": "{\"name\": \"0cd3cd84acc743a6a601\", \"layouts\": [{\"id\": 0, \"position\": {\"x\": 12, \"y\": 14, \"z\": 1, \"width\": 1232, \"height\": 30}}], \"singleVisual\": {\"visualType\": \"textbox\", \"drillFilterOtherVisuals\": true, \"objects\": {\"general\": [{\"properties\": {\"paragraphs\": [{\"horizontalTextAlignment\": \"left\", \"textRuns\": [{\"value\": \"Fraud review queue \\u2014 PaySim holdout\", \"textStyle\": {\"fontFamily\": \"Segoe UI Semibold\", \"fontSize\": \"16pt\", \"fontWeight\": \"600\", \"color\": \"#FFFFFF\"}}]}]}}]}, \"vcObjects\": {\"background\": [{\"properties\": {\"show\": {\"expr\": {\"Literal\": {\"Value\": \"false\"}}}, \"color\": {\"solid\": {\"color\": {\"expr\": {\"Literal\": {\"Value\": \"'#FFFFFF'\"}}}}}, \"transparency\": {\"expr\": {\"Literal\": {\"Value\": \"0D\"}}}}}], \"border\": [{\"properties\": {\"show\": {\"expr\": {\"Literal\": {\"Value\": \"false\"}}}}}], \"title\": [{\"properties\": {\"show\": {\"expr\": {\"Literal\": {\"Value\": \"false\"}}}}}], \"visualHeader\": [{\"properties\": {\"show\": {\"expr\": {\"Literal\": {\"Value\": \"false\"}}}}}]}}}",
+          "filters": "[]"
+        },
+        {
+          "x": 12,
+          "y": 44,
+          "z": 2,
+          "width": 1232,
+          "height": 24,
+          "config": "{\"name\": \"0c562fd432e74918b482\", \"layouts\": [{\"id\": 0, \"position\": {\"x\": 12, \"y\": 44, \"z\": 2, \"width\": 1232, \"height\": 24}}], \"singleVisual\": {\"visualType\": \"textbox\", \"drillFilterOtherVisuals\": true, \"objects\": {\"general\": [{\"properties\": {\"paragraphs\": [{\"horizontalTextAlignment\": \"left\", \"textRuns\": [{\"value\": \"818,514 transactions \\u00b7 4,570 frauds \\u00b7 scored by the leak-free Track D model (holdout PR-AUC 0.3260)\", \"textStyle\": {\"fontFamily\": \"Segoe UI\", \"fontSize\": \"9pt\", \"fontWeight\": \"normal\", \"color\": \"#A9A8A3\"}}]}]}}]}, \"vcObjects\": {\"background\": [{\"properties\": {\"show\": {\"expr\": {\"Literal\": {\"Value\": \"false\"}}}, \"color\": {\"solid\": {\"color\": {\"expr\": {\"Literal\": {\"Value\": \"'#FFFFFF'\"}}}}}, \"transparency\": {\"expr\": {\"Literal\": {\"Value\": \"0D\"}}}}}], \"border\": [{\"properties\": {\"show\": {\"expr\": {\"Literal\": {\"Value\": \"false\"}}}}}], \"title\": [{\"properties\": {\"show\": {\"expr\": {\"Literal\": {\"Value\": \"false\"}}}}}], \"visualHeader\": [{\"properties\": {\"show\": {\"expr\": {\"Literal\": {\"Value\": \"false\"}}}}}]}}}",
+          "filters": "[]"
+        },
+        {
+          "x": 24,
+          "y": 100,
+          "z": 3,
+          "width": 296,
+          "height": 104,
+          "config": "{\"name\": \"20f8173a6cb348e8b67d\", \"layouts\": [{\"id\": 0, \"position\": {\"x\": 24, \"y\": 100, \"z\": 3, \"width\": 296, \"height\": 104}}], \"singleVisual\": {\"visualType\": \"card\", \"projections\": {\"Values\": [{\"queryRef\": \"scored_transactions.Fraud Exposure\"}]}, \"prototypeQuery\": {\"Version\": 2, \"From\": [{\"Name\": \"s\", \"Entity\": \"scored_transactions\", \"Type\": 0}], \"Select\": [{\"Measure\": {\"Expression\": {\"SourceRef\": {\"Source\": \"s\"}}, \"Property\": \"Fraud Exposure\"}, \"Name\": \"scored_transactions.Fraud Exposure\"}]}, \"drillFilterOtherVisuals\": true, \"objects\": {\"labels\": [{\"properties\": {\"color\": {\"solid\": {\"color\": {\"expr\": {\"Literal\": {\"Value\": \"'#0B0B0B'\"}}}}}, \"fontSize\": {\"expr\": {\"Literal\": {\"Value\": \"26D\"}}}, \"fontFamily\": {\"expr\": {\"Literal\": {\"Value\": \"'Segoe UI Light'\"}}}}}], \"categoryLabels\": [{\"properties\": {\"show\": {\"expr\": {\"Literal\": {\"Value\": \"false\"}}}}}], \"wordWrap\": [{\"properties\": {\"show\": {\"expr\": {\"Literal\": {\"Value\": \"false\"}}}}}]}, \"vcObjects\": {\"title\": [{\"properties\": {\"show\": {\"expr\": {\"Literal\": {\"Value\": \"true\"}}}, \"text\": {\"expr\": {\"Literal\": {\"Value\": \"'Total fraud exposure'\"}}}, \"fontColor\": {\"solid\": {\"color\": {\"expr\": {\"Literal\": {\"Value\": \"'#0B0B0B'\"}}}}}, \"fontSize\": {\"expr\": {\"Literal\": {\"Value\": \"11D\"}}}, \"fontFamily\": {\"expr\": {\"Literal\": {\"Value\": \"'Segoe UI Semibold'\"}}}, \"alignment\": {\"expr\": {\"Literal\": {\"Value\": \"'left'\"}}}}}]}}}",
+          "filters": "[]"
+        },
+        {
+          "x": 336,
+          "y": 100,
+          "z": 4,
+          "width": 296,
+          "height": 104,
+          "config": "{\"name\": \"fe58c0a64c504bfbbe24\", \"layouts\": [{\"id\": 0, \"position\": {\"x\": 336, \"y\": 100, \"z\": 4, \"width\": 296, \"height\": 104}}], \"singleVisual\": {\"visualType\": \"card\", \"projections\": {\"Values\": [{\"queryRef\": \"scored_transactions.Value Recovered\"}]}, \"prototypeQuery\": {\"Version\": 2, \"From\": [{\"Name\": \"s\", \"Entity\": \"scored_transactions\", \"Type\": 0}], \"Select\": [{\"Measure\": {\"Expression\": {\"SourceRef\": {\"Source\": \"s\"}}, \"Property\": \"Value Recovered\"}, \"Name\": \"scored_transactions.Value Recovered\"}]}, \"drillFilterOtherVisuals\": true, \"objects\": {\"labels\": [{\"properties\": {\"color\": {\"solid\": {\"color\": {\"expr\": {\"Literal\": {\"Value\": \"'#0B0B0B'\"}}}}}, \"fontSize\": {\"expr\": {\"Literal\": {\"Value\": \"26D\"}}}, \"fontFamily\": {\"expr\": {\"Literal\": {\"Value\": \"'Segoe UI Light'\"}}}}}], \"categoryLabels\": [{\"properties\": {\"show\": {\"expr\": {\"Literal\": {\"Value\": \"false\"}}}}}], \"wordWrap\": [{\"properties\": {\"show\": {\"expr\": {\"Literal\": {\"Value\": \"false\"}}}}}]}, \"vcObjects\": {\"title\": [{\"properties\": {\"show\": {\"expr\": {\"Literal\": {\"Value\": \"true\"}}}, \"text\": {\"expr\": {\"Literal\": {\"Value\": \"'Recovered by the queue'\"}}}, \"fontColor\": {\"solid\": {\"color\": {\"expr\": {\"Literal\": {\"Value\": \"'#0B0B0B'\"}}}}}, \"fontSize\": {\"expr\": {\"Literal\": {\"Value\": \"11D\"}}}, \"fontFamily\": {\"expr\": {\"Literal\": {\"Value\": \"'Segoe UI Semibold'\"}}}, \"alignment\": {\"expr\": {\"Literal\": {\"Value\": \"'left'\"}}}}}]}}}",
+          "filters": "[]"
+        },
+        {
+          "x": 648,
+          "y": 100,
+          "z": 5,
+          "width": 296,
+          "height": 104,
+          "config": "{\"name\": \"95aa077a77d74b6286c2\", \"layouts\": [{\"id\": 0, \"position\": {\"x\": 648, \"y\": 100, \"z\": 5, \"width\": 296, \"height\": 104}}], \"singleVisual\": {\"visualType\": \"card\", \"projections\": {\"Values\": [{\"queryRef\": \"scored_transactions.Recovery Rate\"}]}, \"prototypeQuery\": {\"Version\": 2, \"From\": [{\"Name\": \"s\", \"Entity\": \"scored_transactions\", \"Type\": 0}], \"Select\": [{\"Measure\": {\"Expression\": {\"SourceRef\": {\"Source\": \"s\"}}, \"Property\": \"Recovery Rate\"}, \"Name\": \"scored_transactions.Recovery Rate\"}]}, \"drillFilterOtherVisuals\": true, \"objects\": {\"labels\": [{\"properties\": {\"color\": {\"solid\": {\"color\": {\"expr\": {\"Literal\": {\"Value\": \"'#0B0B0B'\"}}}}}, \"fontSize\": {\"expr\": {\"Literal\": {\"Value\": \"26D\"}}}, \"fontFamily\": {\"expr\": {\"Literal\": {\"Value\": \"'Segoe UI Light'\"}}}}}], \"categoryLabels\": [{\"properties\": {\"show\": {\"expr\": {\"Literal\": {\"Value\": \"false\"}}}}}], \"wordWrap\": [{\"properties\": {\"show\": {\"expr\": {\"Literal\": {\"Value\": \"false\"}}}}}]}, \"vcObjects\": {\"title\": [{\"properties\": {\"show\": {\"expr\": {\"Literal\": {\"Value\": \"true\"}}}, \"text\": {\"expr\": {\"Literal\": {\"Value\": \"'Share of fraud value recovered'\"}}}, \"fontColor\": {\"solid\": {\"color\": {\"expr\": {\"Literal\": {\"Value\": \"'#0B0B0B'\"}}}}}, \"fontSize\": {\"expr\": {\"Literal\": {\"Value\": \"11D\"}}}, \"fontFamily\": {\"expr\": {\"Literal\": {\"Value\": \"'Segoe UI Semibold'\"}}}, \"alignment\": {\"expr\": {\"Literal\": {\"Value\": \"'left'\"}}}}}]}}}",
+          "filters": "[]"
+        },
+        {
+          "x": 960,
+          "y": 100,
+          "z": 6,
+          "width": 296,
+          "height": 104,
+          "config": "{\"name\": \"f25740b13c39495ba354\", \"layouts\": [{\"id\": 0, \"position\": {\"x\": 960, \"y\": 100, \"z\": 6, \"width\": 296, \"height\": 104}}], \"singleVisual\": {\"visualType\": \"card\", \"projections\": {\"Values\": [{\"queryRef\": \"scored_transactions.Queue Precision\"}]}, \"prototypeQuery\": {\"Version\": 2, \"From\": [{\"Name\": \"s\", \"Entity\": \"scored_transactions\", \"Type\": 0}], \"Select\": [{\"Measure\": {\"Expression\": {\"SourceRef\": {\"Source\": \"s\"}}, \"Property\": \"Queue Precision\"}, \"Name\": \"scored_transactions.Queue Precision\"}]}, \"drillFilterOtherVisuals\": true, \"objects\": {\"labels\": [{\"properties\": {\"color\": {\"solid\": {\"color\": {\"expr\": {\"Literal\": {\"Value\": \"'#0B0B0B'\"}}}}}, \"fontSize\": {\"expr\": {\"Literal\": {\"Value\": \"26D\"}}}, \"fontFamily\": {\"expr\": {\"Literal\": {\"Value\": \"'Segoe UI Light'\"}}}}}], \"categoryLabels\": [{\"properties\": {\"show\": {\"expr\": {\"Literal\": {\"Value\": \"false\"}}}}}], \"wordWrap\": [{\"properties\": {\"show\": {\"expr\": {\"Literal\": {\"Value\": \"false\"}}}}}]}, \"vcObjects\": {\"title\": [{\"properties\": {\"show\": {\"expr\": {\"Literal\": {\"Value\": \"true\"}}}, \"text\": {\"expr\": {\"Literal\": {\"Value\": \"'Queue precision'\"}}}, \"fontColor\": {\"solid\": {\"color\": {\"expr\": {\"Literal\": {\"Value\": \"'#0B0B0B'\"}}}}}, \"fontSize\": {\"expr\": {\"Literal\": {\"Value\": \"11D\"}}}, \"fontFamily\": {\"expr\": {\"Literal\": {\"Value\": \"'Segoe UI Semibold'\"}}}, \"alignment\": {\"expr\": {\"Literal\": {\"Value\": \"'left'\"}}}}}]}}}",
+          "filters": "[]"
+        },
+        {
+          "x": 24,
+          "y": 220,
+          "z": 7,
+          "width": 792,
+          "height": 248,
+          "config": "{\"name\": \"4acc479b79c54ce29019\", \"layouts\": [{\"id\": 0, \"position\": {\"x\": 24, \"y\": 220, \"z\": 7, \"width\": 792, \"height\": 248}}], \"singleVisual\": {\"visualType\": \"lineChart\", \"projections\": {\"Category\": [{\"queryRef\": \"dashboard_summary.queue_size\"}], \"Y\": [{\"queryRef\": \"Sum(dashboard_summary.value_recovered_pct)\"}], \"Tooltips\": [{\"queryRef\": \"Sum(dashboard_summary.lift_vs_random)\"}]}, \"prototypeQuery\": {\"Version\": 2, \"From\": [{\"Name\": \"q\", \"Entity\": \"dashboard_summary\", \"Type\": 0}], \"Select\": [{\"Column\": {\"Expression\": {\"SourceRef\": {\"Source\": \"q\"}}, \"Property\": \"queue_size\"}, \"Name\": \"dashboard_summary.queue_size\"}, {\"Aggregation\": {\"Expression\": {\"Column\": {\"Expression\": {\"SourceRef\": {\"Source\": \"q\"}}, \"Property\": \"value_recovered_pct\"}}, \"Function\": 0}, \"Name\": \"Sum(dashboard_summary.value_recovered_pct)\"}, {\"Aggregation\": {\"Expression\": {\"Column\": {\"Expression\": {\"SourceRef\": {\"Source\": \"q\"}}, \"Property\": \"lift_vs_random\"}}, \"Function\": 0}, \"Name\": \"Sum(dashboard_summary.lift_vs_random)\"}]}, \"drillFilterOtherVisuals\": true, \"objects\": {\"categoryAxis\": [{\"properties\": {\"show\": {\"expr\": {\"Literal\": {\"Value\": \"true\"}}}, \"axisScale\": {\"expr\": {\"Literal\": {\"Value\": \"'Log'\"}}}, \"showAxisTitle\": {\"expr\": {\"Literal\": {\"Value\": \"true\"}}}, \"titleText\": {\"expr\": {\"Literal\": {\"Value\": \"'Review budget (transactions)'\"}}}, \"labelColor\": {\"solid\": {\"color\": {\"expr\": {\"Literal\": {\"Value\": \"'#52514E'\"}}}}}, \"fontSize\": {\"expr\": {\"Literal\": {\"Value\": \"9D\"}}}, \"gridlineShow\": {\"expr\": {\"Literal\": {\"Value\": \"false\"}}}}}], \"valueAxis\": [{\"properties\": {\"show\": {\"expr\": {\"Literal\": {\"Value\": \"true\"}}}, \"showAxisTitle\": {\"expr\": {\"Literal\": {\"Value\": \"true\"}}}, \"titleText\": {\"expr\": {\"Literal\": {\"Value\": \"'Fraud value recovered (%)'\"}}}, \"start\": {\"expr\": {\"Literal\": {\"Value\": \"0D\"}}}, \"end\": {\"expr\": {\"Literal\": {\"Value\": \"100D\"}}}, \"labelColor\": {\"solid\": {\"color\": {\"expr\": {\"Literal\": {\"Value\": \"'#52514E'\"}}}}}, \"fontSize\": {\"expr\": {\"Literal\": {\"Value\": \"9D\"}}}, \"gridlineColor\": {\"solid\": {\"color\": {\"expr\": {\"Literal\": {\"Value\": \"'#E1E0D9'\"}}}}}, \"gridlineThickness\": {\"expr\": {\"Literal\": {\"Value\": \"1D\"}}}}}], \"dataPoint\": [{\"properties\": {\"fill\": {\"solid\": {\"color\": {\"expr\": {\"Literal\": {\"Value\": \"'#2A78D6'\"}}}}}}}], \"lineStyles\": [{\"properties\": {\"strokeWidth\": {\"expr\": {\"Literal\": {\"Value\": \"3D\"}}}, \"showMarker\": {\"expr\": {\"Literal\": {\"Value\": \"true\"}}}, \"markerSize\": {\"expr\": {\"Literal\": {\"Value\": \"5D\"}}}, \"lineStyle\": {\"expr\": {\"Literal\": {\"Value\": \"'solid'\"}}}}}], \"labels\": [{\"properties\": {\"show\": {\"expr\": {\"Literal\": {\"Value\": \"false\"}}}}}], \"legend\": [{\"properties\": {\"show\": {\"expr\": {\"Literal\": {\"Value\": \"false\"}}}}}]}, \"vcObjects\": {\"title\": [{\"properties\": {\"show\": {\"expr\": {\"Literal\": {\"Value\": \"true\"}}}, \"text\": {\"expr\": {\"Literal\": {\"Value\": \"'What the review queue recovers'\"}}}, \"fontColor\": {\"solid\": {\"color\": {\"expr\": {\"Literal\": {\"Value\": \"'#0B0B0B'\"}}}}}, \"fontSize\": {\"expr\": {\"Literal\": {\"Value\": \"11D\"}}}, \"fontFamily\": {\"expr\": {\"Literal\": {\"Value\": \"'Segoe UI Semibold'\"}}}, \"alignment\": {\"expr\": {\"Literal\": {\"Value\": \"'left'\"}}}}}]}}}",
+          "filters": "[]"
+        },
+        {
+          "x": 832,
+          "y": 220,
+          "z": 8,
+          "width": 424,
+          "height": 248,
+          "config": "{\"name\": \"6ad7f74a32804b0d9d19\", \"layouts\": [{\"id\": 0, \"position\": {\"x\": 832, \"y\": 220, \"z\": 8, \"width\": 424, \"height\": 248}}], \"singleVisual\": {\"visualType\": \"donutChart\", \"projections\": {\"Category\": [{\"queryRef\": \"scored_transactions.outcome\"}], \"Y\": [{\"queryRef\": \"scored_transactions.Transactions\"}]}, \"prototypeQuery\": {\"Version\": 2, \"From\": [{\"Name\": \"s\", \"Entity\": \"scored_transactions\", \"Type\": 0}], \"Select\": [{\"Column\": {\"Expression\": {\"SourceRef\": {\"Source\": \"s\"}}, \"Property\": \"outcome\"}, \"Name\": \"scored_transactions.outcome\"}, {\"Measure\": {\"Expression\": {\"SourceRef\": {\"Source\": \"s\"}}, \"Property\": \"Transactions\"}, \"Name\": \"scored_transactions.Transactions\"}]}, \"drillFilterOtherVisuals\": true, \"objects\": {\"legend\": [{\"properties\": {\"show\": {\"expr\": {\"Literal\": {\"Value\": \"true\"}}}, \"position\": {\"expr\": {\"Literal\": {\"Value\": \"'Bottom'\"}}}, \"showTitle\": {\"expr\": {\"Literal\": {\"Value\": \"false\"}}}, \"fontSize\": {\"expr\": {\"Literal\": {\"Value\": \"9D\"}}}, \"labelColor\": {\"solid\": {\"color\": {\"expr\": {\"Literal\": {\"Value\": \"'#52514E'\"}}}}}}}], \"labels\": [{\"properties\": {\"show\": {\"expr\": {\"Literal\": {\"Value\": \"true\"}}}, \"fontSize\": {\"expr\": {\"Literal\": {\"Value\": \"9D\"}}}, \"color\": {\"solid\": {\"color\": {\"expr\": {\"Literal\": {\"Value\": \"'#52514E'\"}}}}}, \"labelStyle\": {\"expr\": {\"Literal\": {\"Value\": \"'Percent of total'\"}}}}}], \"slices\": [{\"properties\": {\"innerRadiusRatio\": {\"expr\": {\"Literal\": {\"Value\": \"62D\"}}}}}]}, \"vcObjects\": {\"title\": [{\"properties\": {\"show\": {\"expr\": {\"Literal\": {\"Value\": \"true\"}}}, \"text\": {\"expr\": {\"Literal\": {\"Value\": \"'Of all fraud, what the queue caught'\"}}}, \"fontColor\": {\"solid\": {\"color\": {\"expr\": {\"Literal\": {\"Value\": \"'#0B0B0B'\"}}}}}, \"fontSize\": {\"expr\": {\"Literal\": {\"Value\": \"11D\"}}}, \"fontFamily\": {\"expr\": {\"Literal\": {\"Value\": \"'Segoe UI Semibold'\"}}}, \"alignment\": {\"expr\": {\"Literal\": {\"Value\": \"'left'\"}}}}}]}}}",
+          "filters": "[{\"name\": \"40f78c5bce01\", \"expression\": {\"Column\": {\"Expression\": {\"SourceRef\": {\"Entity\": \"scored_transactions\"}}, \"Property\": \"is_fraud\"}}, \"filter\": {\"Version\": 2, \"From\": [{\"Name\": \"f\", \"Entity\": \"scored_transactions\", \"Type\": 0}], \"Where\": [{\"Condition\": {\"Comparison\": {\"ComparisonKind\": 0, \"Left\": {\"Column\": {\"Expression\": {\"SourceRef\": {\"Source\": \"f\"}}, \"Property\": \"is_fraud\"}}, \"Right\": {\"Literal\": {\"Value\": \"1L\"}}}}}]}, \"type\": \"Categorical\"}]"
+        },
+        {
+          "x": 24,
+          "y": 484,
+          "z": 9,
+          "width": 1232,
+          "height": 212,
+          "config": "{\"name\": \"22bb0bc254bb4e0da017\", \"layouts\": [{\"id\": 0, \"position\": {\"x\": 24, \"y\": 484, \"z\": 9, \"width\": 1232, \"height\": 212}}], \"singleVisual\": {\"visualType\": \"tableEx\", \"projections\": {\"Values\": [{\"queryRef\": \"scored_transactions.score_rank\"}, {\"queryRef\": \"scored_transactions.fraud_score\"}, {\"queryRef\": \"scored_transactions.type\"}, {\"queryRef\": \"scored_transactions.amount\"}, {\"queryRef\": \"scored_transactions.nameDest\"}, {\"queryRef\": \"scored_transactions.dest_txn_count\"}, {\"queryRef\": \"scored_transactions.outcome\"}]}, \"prototypeQuery\": {\"Version\": 2, \"From\": [{\"Name\": \"s\", \"Entity\": \"scored_transactions\", \"Type\": 0}], \"Select\": [{\"Column\": {\"Expression\": {\"SourceRef\": {\"Source\": \"s\"}}, \"Property\": \"score_rank\"}, \"Name\": \"scored_transactions.score_rank\"}, {\"Column\": {\"Expression\": {\"SourceRef\": {\"Source\": \"s\"}}, \"Property\": \"fraud_score\"}, \"Name\": \"scored_transactions.fraud_score\"}, {\"Column\": {\"Expression\": {\"SourceRef\": {\"Source\": \"s\"}}, \"Property\": \"type\"}, \"Name\": \"scored_transactions.type\"}, {\"Column\": {\"Expression\": {\"SourceRef\": {\"Source\": \"s\"}}, \"Property\": \"amount\"}, \"Name\": \"scored_transactions.amount\"}, {\"Column\": {\"Expression\": {\"SourceRef\": {\"Source\": \"s\"}}, \"Property\": \"nameDest\"}, \"Name\": \"scored_transactions.nameDest\"}, {\"Column\": {\"Expression\": {\"SourceRef\": {\"Source\": \"s\"}}, \"Property\": \"dest_txn_count\"}, \"Name\": \"scored_transactions.dest_txn_count\"}, {\"Column\": {\"Expression\": {\"SourceRef\": {\"Source\": \"s\"}}, \"Property\": \"outcome\"}, \"Name\": \"scored_transactions.outcome\"}], \"OrderBy\": [{\"Direction\": 1, \"Expression\": {\"Column\": {\"Expression\": {\"SourceRef\": {\"Source\": \"s\"}}, \"Property\": \"score_rank\"}}}]}, \"drillFilterOtherVisuals\": true, \"objects\": {\"grid\": [{\"properties\": {\"gridVertical\": {\"expr\": {\"Literal\": {\"Value\": \"false\"}}}, \"gridHorizontal\": {\"expr\": {\"Literal\": {\"Value\": \"true\"}}}, \"gridHorizontalColor\": {\"solid\": {\"color\": {\"expr\": {\"Literal\": {\"Value\": \"'#E1E0D9'\"}}}}}, \"outlineColor\": {\"solid\": {\"color\": {\"expr\": {\"Literal\": {\"Value\": \"'#E6E5DE'\"}}}}}, \"rowPadding\": {\"expr\": {\"Literal\": {\"Value\": \"3D\"}}}}}], \"columnHeaders\": [{\"properties\": {\"fontColor\": {\"solid\": {\"color\": {\"expr\": {\"Literal\": {\"Value\": \"'#52514E'\"}}}}}, \"backColor\": {\"solid\": {\"color\": {\"expr\": {\"Literal\": {\"Value\": \"'#FCFCFB'\"}}}}}, \"fontSize\": {\"expr\": {\"Literal\": {\"Value\": \"9D\"}}}, \"bold\": {\"expr\": {\"Literal\": {\"Value\": \"true\"}}}, \"outline\": {\"expr\": {\"Literal\": {\"Value\": \"'BottomOnly'\"}}}}}], \"values\": [{\"properties\": {\"fontColor\": {\"solid\": {\"color\": {\"expr\": {\"Literal\": {\"Value\": \"'#0B0B0B'\"}}}}}, \"fontSize\": {\"expr\": {\"Literal\": {\"Value\": \"9D\"}}}, \"backColorPrimary\": {\"solid\": {\"color\": {\"expr\": {\"Literal\": {\"Value\": \"'#FFFFFF'\"}}}}}, \"backColorSecondary\": {\"solid\": {\"color\": {\"expr\": {\"Literal\": {\"Value\": \"'#FCFCFB'\"}}}}}}}]}, \"vcObjects\": {\"title\": [{\"properties\": {\"show\": {\"expr\": {\"Literal\": {\"Value\": \"true\"}}}, \"text\": {\"expr\": {\"Literal\": {\"Value\": \"'The review queue \\u2014 top 1,000 by score, ties broken by amount'\"}}}, \"fontColor\": {\"solid\": {\"color\": {\"expr\": {\"Literal\": {\"Value\": \"'#0B0B0B'\"}}}}}, \"fontSize\": {\"expr\": {\"Literal\": {\"Value\": \"11D\"}}}, \"fontFamily\": {\"expr\": {\"Literal\": {\"Value\": \"'Segoe UI Semibold'\"}}}, \"alignment\": {\"expr\": {\"Literal\": {\"Value\": \"'left'\"}}}}}]}}}",
+          "filters": "[{\"name\": \"90e08e6f5efe\", \"expression\": {\"Column\": {\"Expression\": {\"SourceRef\": {\"Entity\": \"scored_transactions\"}}, \"Property\": \"in_review_queue\"}}, \"filter\": {\"Version\": 2, \"From\": [{\"Name\": \"f\", \"Entity\": \"scored_transactions\", \"Type\": 0}], \"Where\": [{\"Condition\": {\"Comparison\": {\"ComparisonKind\": 0, \"Left\": {\"Column\": {\"Expression\": {\"SourceRef\": {\"Source\": \"f\"}}, \"Property\": \"in_review_queue\"}}, \"Right\": {\"Literal\": {\"Value\": \"1L\"}}}}}]}, \"type\": \"Categorical\"}]"
+        }
+      ],
+      "config": "{\"objects\": {\"background\": [{\"properties\": {\"color\": {\"solid\": {\"color\": {\"expr\": {\"Literal\": {\"Value\": \"'#F2F1EC'\"}}}}}, \"transparency\": {\"expr\": {\"Literal\": {\"Value\": \"0D\"}}}}}], \"outspace\": [{\"properties\": {\"color\": {\"solid\": {\"color\": {\"expr\": {\"Literal\": {\"Value\": \"'#F2F1EC'\"}}}}}}}]}}",
+      "displayOption": 1,
+      "width": 1280,
+      "height": 720
+    },
+    {
+      "id": 1,
+      "name": "ReportSectionModel",
+      "displayName": "Model behaviour",
+      "filters": "[]",
+      "ordinal": 1,
+      "visualContainers": [
+        {
+          "x": 0,
+          "y": 0,
+          "z": 0,
+          "width": 1280,
+          "height": 76,
+          "config": "{\"name\": \"561668a684d44e85a4df\", \"layouts\": [{\"id\": 0, \"position\": {\"x\": 0, \"y\": 0, \"z\": 0, \"width\": 1280, \"height\": 76}}], \"singleVisual\": {\"visualType\": \"textbox\", \"drillFilterOtherVisuals\": true, \"objects\": {\"general\": [{\"properties\": {\"paragraphs\": [{\"horizontalTextAlignment\": \"left\", \"textRuns\": [{\"value\": \" \", \"textStyle\": {\"fontFamily\": \"Segoe UI\", \"fontSize\": \"1pt\", \"fontWeight\": \"normal\", \"color\": \"#0B0B0B\"}}]}]}}]}, \"vcObjects\": {\"background\": [{\"properties\": {\"show\": {\"expr\": {\"Literal\": {\"Value\": \"true\"}}}, \"color\": {\"solid\": {\"color\": {\"expr\": {\"Literal\": {\"Value\": \"'#0B0B0B'\"}}}}}, \"transparency\": {\"expr\": {\"Literal\": {\"Value\": \"0D\"}}}}}], \"border\": [{\"properties\": {\"show\": {\"expr\": {\"Literal\": {\"Value\": \"false\"}}}}}], \"title\": [{\"properties\": {\"show\": {\"expr\": {\"Literal\": {\"Value\": \"false\"}}}}}], \"visualHeader\": [{\"properties\": {\"show\": {\"expr\": {\"Literal\": {\"Value\": \"false\"}}}}}]}}}",
+          "filters": "[]"
+        },
+        {
+          "x": 12,
+          "y": 14,
+          "z": 1,
+          "width": 1232,
+          "height": 30,
+          "config": "{\"name\": \"25e9e6e4152744a88884\", \"layouts\": [{\"id\": 0, \"position\": {\"x\": 12, \"y\": 14, \"z\": 1, \"width\": 1232, \"height\": 30}}], \"singleVisual\": {\"visualType\": \"textbox\", \"drillFilterOtherVisuals\": true, \"objects\": {\"general\": [{\"properties\": {\"paragraphs\": [{\"horizontalTextAlignment\": \"left\", \"textRuns\": [{\"value\": \"Model behaviour \\u2014 and the artifact that is not signal\", \"textStyle\": {\"fontFamily\": \"Segoe UI Semibold\", \"fontSize\": \"16pt\", \"fontWeight\": \"600\", \"color\": \"#FFFFFF\"}}]}]}}]}, \"vcObjects\": {\"background\": [{\"properties\": {\"show\": {\"expr\": {\"Literal\": {\"Value\": \"false\"}}}, \"color\": {\"solid\": {\"color\": {\"expr\": {\"Literal\": {\"Value\": \"'#FFFFFF'\"}}}}}, \"transparency\": {\"expr\": {\"Literal\": {\"Value\": \"0D\"}}}}}], \"border\": [{\"properties\": {\"show\": {\"expr\": {\"Literal\": {\"Value\": \"false\"}}}}}], \"title\": [{\"properties\": {\"show\": {\"expr\": {\"Literal\": {\"Value\": \"false\"}}}}}], \"visualHeader\": [{\"properties\": {\"show\": {\"expr\": {\"Literal\": {\"Value\": \"false\"}}}}}]}}}",
+          "filters": "[]"
+        },
+        {
+          "x": 12,
+          "y": 44,
+          "z": 2,
+          "width": 1232,
+          "height": 24,
+          "config": "{\"name\": \"a927de82105049a2b52f\", \"layouts\": [{\"id\": 0, \"position\": {\"x\": 12, \"y\": 44, \"z\": 2, \"width\": 1232, \"height\": 24}}], \"singleVisual\": {\"visualType\": \"textbox\", \"drillFilterOtherVisuals\": true, \"objects\": {\"general\": [{\"properties\": {\"paragraphs\": [{\"horizontalTextAlignment\": \"left\", \"textRuns\": [{\"value\": \"Track D is the leak-free feature set. The hourly pattern below is the simulator's, not a fraud pattern \\u2014 it is documented here, not modelled.\", \"textStyle\": {\"fontFamily\": \"Segoe UI\", \"fontSize\": \"9pt\", \"fontWeight\": \"normal\", \"color\": \"#A9A8A3\"}}]}]}}]}, \"vcObjects\": {\"background\": [{\"properties\": {\"show\": {\"expr\": {\"Literal\": {\"Value\": \"false\"}}}, \"color\": {\"solid\": {\"color\": {\"expr\": {\"Literal\": {\"Value\": \"'#FFFFFF'\"}}}}}, \"transparency\": {\"expr\": {\"Literal\": {\"Value\": \"0D\"}}}}}], \"border\": [{\"properties\": {\"show\": {\"expr\": {\"Literal\": {\"Value\": \"false\"}}}}}], \"title\": [{\"properties\": {\"show\": {\"expr\": {\"Literal\": {\"Value\": \"false\"}}}}}], \"visualHeader\": [{\"properties\": {\"show\": {\"expr\": {\"Literal\": {\"Value\": \"false\"}}}}}]}}}",
+          "filters": "[]"
+        },
+        {
+          "x": 24,
+          "y": 100,
+          "z": 3,
+          "width": 232,
+          "height": 92,
+          "config": "{\"name\": \"6ff321f9670846d4a0d3\", \"layouts\": [{\"id\": 0, \"position\": {\"x\": 24, \"y\": 100, \"z\": 3, \"width\": 232, \"height\": 92}}], \"singleVisual\": {\"visualType\": \"slicer\", \"projections\": {\"Values\": [{\"queryRef\": \"scored_transactions.type\"}]}, \"prototypeQuery\": {\"Version\": 2, \"From\": [{\"Name\": \"s\", \"Entity\": \"scored_transactions\", \"Type\": 0}], \"Select\": [{\"Column\": {\"Expression\": {\"SourceRef\": {\"Source\": \"s\"}}, \"Property\": \"type\"}, \"Name\": \"scored_transactions.type\"}]}, \"drillFilterOtherVisuals\": true, \"objects\": {\"general\": [{\"properties\": {\"outlineWeight\": {\"expr\": {\"Literal\": {\"Value\": \"0D\"}}}, \"orientation\": {\"expr\": {\"Literal\": {\"Value\": \"'Horizontal'\"}}}}}], \"items\": [{\"properties\": {\"fontColor\": {\"solid\": {\"color\": {\"expr\": {\"Literal\": {\"Value\": \"'#52514E'\"}}}}}, \"fontSize\": {\"expr\": {\"Literal\": {\"Value\": \"9D\"}}}, \"background\": {\"solid\": {\"color\": {\"expr\": {\"Literal\": {\"Value\": \"'#FCFCFB'\"}}}}}}}], \"header\": [{\"properties\": {\"show\": {\"expr\": {\"Literal\": {\"Value\": \"false\"}}}}}]}, \"vcObjects\": {\"title\": [{\"properties\": {\"show\": {\"expr\": {\"Literal\": {\"Value\": \"true\"}}}, \"text\": {\"expr\": {\"Literal\": {\"Value\": \"'Transaction type'\"}}}, \"fontColor\": {\"solid\": {\"color\": {\"expr\": {\"Literal\": {\"Value\": \"'#0B0B0B'\"}}}}}, \"fontSize\": {\"expr\": {\"Literal\": {\"Value\": \"11D\"}}}, \"fontFamily\": {\"expr\": {\"Literal\": {\"Value\": \"'Segoe UI Semibold'\"}}}, \"alignment\": {\"expr\": {\"Literal\": {\"Value\": \"'left'\"}}}}}]}}}",
+          "filters": "[]"
+        },
+        {
+          "x": 272,
+          "y": 100,
+          "z": 4,
+          "width": 232,
+          "height": 92,
+          "config": "{\"name\": \"fb47331259ec43e7924a\", \"layouts\": [{\"id\": 0, \"position\": {\"x\": 272, \"y\": 100, \"z\": 4, \"width\": 232, \"height\": 92}}], \"singleVisual\": {\"visualType\": \"slicer\", \"projections\": {\"Values\": [{\"queryRef\": \"scored_transactions.risk_band\"}]}, \"prototypeQuery\": {\"Version\": 2, \"From\": [{\"Name\": \"s\", \"Entity\": \"scored_transactions\", \"Type\": 0}], \"Select\": [{\"Column\": {\"Expression\": {\"SourceRef\": {\"Source\": \"s\"}}, \"Property\": \"risk_band\"}, \"Name\": \"scored_transactions.risk_band\"}]}, \"drillFilterOtherVisuals\": true, \"objects\": {\"general\": [{\"properties\": {\"outlineWeight\": {\"expr\": {\"Literal\": {\"Value\": \"0D\"}}}, \"orientation\": {\"expr\": {\"Literal\": {\"Value\": \"'Horizontal'\"}}}}}], \"items\": [{\"properties\": {\"fontColor\": {\"solid\": {\"color\": {\"expr\": {\"Literal\": {\"Value\": \"'#52514E'\"}}}}}, \"fontSize\": {\"expr\": {\"Literal\": {\"Value\": \"9D\"}}}, \"background\": {\"solid\": {\"color\": {\"expr\": {\"Literal\": {\"Value\": \"'#FCFCFB'\"}}}}}}}], \"header\": [{\"properties\": {\"show\": {\"expr\": {\"Literal\": {\"Value\": \"false\"}}}}}]}, \"vcObjects\": {\"title\": [{\"properties\": {\"show\": {\"expr\": {\"Literal\": {\"Value\": \"true\"}}}, \"text\": {\"expr\": {\"Literal\": {\"Value\": \"'Risk band'\"}}}, \"fontColor\": {\"solid\": {\"color\": {\"expr\": {\"Literal\": {\"Value\": \"'#0B0B0B'\"}}}}}, \"fontSize\": {\"expr\": {\"Literal\": {\"Value\": \"11D\"}}}, \"fontFamily\": {\"expr\": {\"Literal\": {\"Value\": \"'Segoe UI Semibold'\"}}}, \"alignment\": {\"expr\": {\"Literal\": {\"Value\": \"'left'\"}}}}}]}}}",
+          "filters": "[]"
+        },
+        {
+          "x": 520,
+          "y": 100,
+          "z": 5,
+          "width": 736,
+          "height": 348,
+          "config": "{\"name\": \"fb282703f7ce4bd7bb33\", \"layouts\": [{\"id\": 0, \"position\": {\"x\": 520, \"y\": 100, \"z\": 5, \"width\": 736, \"height\": 348}}], \"singleVisual\": {\"visualType\": \"tableEx\", \"projections\": {\"Values\": [{\"queryRef\": \"dashboard_summary.queue_size\"}, {\"queryRef\": \"dashboard_summary.frauds_caught\"}, {\"queryRef\": \"dashboard_summary.value_recovered_pct\"}, {\"queryRef\": \"dashboard_summary.precision\"}, {\"queryRef\": \"dashboard_summary.lift_vs_random\"}]}, \"prototypeQuery\": {\"Version\": 2, \"From\": [{\"Name\": \"q\", \"Entity\": \"dashboard_summary\", \"Type\": 0}], \"Select\": [{\"Column\": {\"Expression\": {\"SourceRef\": {\"Source\": \"q\"}}, \"Property\": \"queue_size\"}, \"Name\": \"dashboard_summary.queue_size\"}, {\"Column\": {\"Expression\": {\"SourceRef\": {\"Source\": \"q\"}}, \"Property\": \"frauds_caught\"}, \"Name\": \"dashboard_summary.frauds_caught\"}, {\"Column\": {\"Expression\": {\"SourceRef\": {\"Source\": \"q\"}}, \"Property\": \"value_recovered_pct\"}, \"Name\": \"dashboard_summary.value_recovered_pct\"}, {\"Column\": {\"Expression\": {\"SourceRef\": {\"Source\": \"q\"}}, \"Property\": \"precision\"}, \"Name\": \"dashboard_summary.precision\"}, {\"Column\": {\"Expression\": {\"SourceRef\": {\"Source\": \"q\"}}, \"Property\": \"lift_vs_random\"}, \"Name\": \"dashboard_summary.lift_vs_random\"}], \"OrderBy\": [{\"Direction\": 1, \"Expression\": {\"Column\": {\"Expression\": {\"SourceRef\": {\"Source\": \"q\"}}, \"Property\": \"queue_size\"}}}]}, \"drillFilterOtherVisuals\": true, \"objects\": {\"grid\": [{\"properties\": {\"gridVertical\": {\"expr\": {\"Literal\": {\"Value\": \"false\"}}}, \"gridHorizontal\": {\"expr\": {\"Literal\": {\"Value\": \"true\"}}}, \"gridHorizontalColor\": {\"solid\": {\"color\": {\"expr\": {\"Literal\": {\"Value\": \"'#E1E0D9'\"}}}}}, \"outlineColor\": {\"solid\": {\"color\": {\"expr\": {\"Literal\": {\"Value\": \"'#E6E5DE'\"}}}}}, \"rowPadding\": {\"expr\": {\"Literal\": {\"Value\": \"6D\"}}}}}], \"columnHeaders\": [{\"properties\": {\"fontColor\": {\"solid\": {\"color\": {\"expr\": {\"Literal\": {\"Value\": \"'#52514E'\"}}}}}, \"backColor\": {\"solid\": {\"color\": {\"expr\": {\"Literal\": {\"Value\": \"'#FCFCFB'\"}}}}}, \"fontSize\": {\"expr\": {\"Literal\": {\"Value\": \"9D\"}}}, \"bold\": {\"expr\": {\"Literal\": {\"Value\": \"true\"}}}, \"outline\": {\"expr\": {\"Literal\": {\"Value\": \"'BottomOnly'\"}}}}}], \"values\": [{\"properties\": {\"fontColor\": {\"solid\": {\"color\": {\"expr\": {\"Literal\": {\"Value\": \"'#0B0B0B'\"}}}}}, \"fontSize\": {\"expr\": {\"Literal\": {\"Value\": \"9D\"}}}, \"backColorPrimary\": {\"solid\": {\"color\": {\"expr\": {\"Literal\": {\"Value\": \"'#FFFFFF'\"}}}}}, \"backColorSecondary\": {\"solid\": {\"color\": {\"expr\": {\"Literal\": {\"Value\": \"'#FCFCFB'\"}}}}}}}]}, \"vcObjects\": {\"title\": [{\"properties\": {\"show\": {\"expr\": {\"Literal\": {\"Value\": \"true\"}}}, \"text\": {\"expr\": {\"Literal\": {\"Value\": \"'Review capacity \\u2014 what each budget returns'\"}}}, \"fontColor\": {\"solid\": {\"color\": {\"expr\": {\"Literal\": {\"Value\": \"'#0B0B0B'\"}}}}}, \"fontSize\": {\"expr\": {\"Literal\": {\"Value\": \"11D\"}}}, \"fontFamily\": {\"expr\": {\"Literal\": {\"Value\": \"'Segoe UI Semibold'\"}}}, \"alignment\": {\"expr\": {\"Literal\": {\"Value\": \"'left'\"}}}}}]}}}",
+          "filters": "[]"
+        },
+        {
+          "x": 24,
+          "y": 208,
+          "z": 6,
+          "width": 480,
+          "height": 240,
+          "config": "{\"name\": \"ba6a84b4f2cc4260a4d1\", \"layouts\": [{\"id\": 0, \"position\": {\"x\": 24, \"y\": 208, \"z\": 6, \"width\": 480, \"height\": 240}}], \"singleVisual\": {\"visualType\": \"columnChart\", \"projections\": {\"Category\": [{\"queryRef\": \"scored_transactions.hour_of_day\"}], \"Y\": [{\"queryRef\": \"scored_transactions.Fraud Rate\"}]}, \"prototypeQuery\": {\"Version\": 2, \"From\": [{\"Name\": \"s\", \"Entity\": \"scored_transactions\", \"Type\": 0}], \"Select\": [{\"Column\": {\"Expression\": {\"SourceRef\": {\"Source\": \"s\"}}, \"Property\": \"hour_of_day\"}, \"Name\": \"scored_transactions.hour_of_day\"}, {\"Measure\": {\"Expression\": {\"SourceRef\": {\"Source\": \"s\"}}, \"Property\": \"Fraud Rate\"}, \"Name\": \"scored_transactions.Fraud Rate\"}]}, \"drillFilterOtherVisuals\": true, \"objects\": {\"dataPoint\": [{\"properties\": {\"fill\": {\"solid\": {\"color\": {\"expr\": {\"Literal\": {\"Value\": \"'#EB6834'\"}}}}}}}], \"categoryAxis\": [{\"properties\": {\"show\": {\"expr\": {\"Literal\": {\"Value\": \"true\"}}}, \"labelColor\": {\"solid\": {\"color\": {\"expr\": {\"Literal\": {\"Value\": \"'#52514E'\"}}}}}, \"fontSize\": {\"expr\": {\"Literal\": {\"Value\": \"8D\"}}}, \"gridlineShow\": {\"expr\": {\"Literal\": {\"Value\": \"false\"}}}, \"showAxisTitle\": {\"expr\": {\"Literal\": {\"Value\": \"false\"}}}}}], \"valueAxis\": [{\"properties\": {\"show\": {\"expr\": {\"Literal\": {\"Value\": \"true\"}}}, \"labelColor\": {\"solid\": {\"color\": {\"expr\": {\"Literal\": {\"Value\": \"'#52514E'\"}}}}}, \"fontSize\": {\"expr\": {\"Literal\": {\"Value\": \"8D\"}}}, \"gridlineColor\": {\"solid\": {\"color\": {\"expr\": {\"Literal\": {\"Value\": \"'#E1E0D9'\"}}}}}, \"showAxisTitle\": {\"expr\": {\"Literal\": {\"Value\": \"false\"}}}}}], \"labels\": [{\"properties\": {\"show\": {\"expr\": {\"Literal\": {\"Value\": \"false\"}}}}}], \"legend\": [{\"properties\": {\"show\": {\"expr\": {\"Literal\": {\"Value\": \"false\"}}}}}]}, \"vcObjects\": {\"title\": [{\"properties\": {\"show\": {\"expr\": {\"Literal\": {\"Value\": \"true\"}}}, \"text\": {\"expr\": {\"Literal\": {\"Value\": \"'Fraud rate by hour \\u2014 the simulator's artifact, not a pattern'\"}}}, \"fontColor\": {\"solid\": {\"color\": {\"expr\": {\"Literal\": {\"Value\": \"'#0B0B0B'\"}}}}}, \"fontSize\": {\"expr\": {\"Literal\": {\"Value\": \"11D\"}}}, \"fontFamily\": {\"expr\": {\"Literal\": {\"Value\": \"'Segoe UI Semibold'\"}}}, \"alignment\": {\"expr\": {\"Literal\": {\"Value\": \"'left'\"}}}}}]}}}",
+          "filters": "[]"
+        },
+        {
+          "x": 24,
+          "y": 464,
+          "z": 7,
+          "width": 1232,
+          "height": 232,
+          "config": "{\"name\": \"5f5d41531e774e4bb745\", \"layouts\": [{\"id\": 0, \"position\": {\"x\": 24, \"y\": 464, \"z\": 7, \"width\": 1232, \"height\": 232}}], \"singleVisual\": {\"visualType\": \"columnChart\", \"projections\": {\"Category\": [{\"queryRef\": \"scored_transactions.risk_band\"}], \"Series\": [{\"queryRef\": \"scored_transactions.outcome\"}], \"Y\": [{\"queryRef\": \"scored_transactions.Transactions\"}]}, \"prototypeQuery\": {\"Version\": 2, \"From\": [{\"Name\": \"s\", \"Entity\": \"scored_transactions\", \"Type\": 0}], \"Select\": [{\"Column\": {\"Expression\": {\"SourceRef\": {\"Source\": \"s\"}}, \"Property\": \"risk_band\"}, \"Name\": \"scored_transactions.risk_band\"}, {\"Column\": {\"Expression\": {\"SourceRef\": {\"Source\": \"s\"}}, \"Property\": \"outcome\"}, \"Name\": \"scored_transactions.outcome\"}, {\"Measure\": {\"Expression\": {\"SourceRef\": {\"Source\": \"s\"}}, \"Property\": \"Transactions\"}, \"Name\": \"scored_transactions.Transactions\"}]}, \"drillFilterOtherVisuals\": true, \"objects\": {\"categoryAxis\": [{\"properties\": {\"show\": {\"expr\": {\"Literal\": {\"Value\": \"true\"}}}, \"labelColor\": {\"solid\": {\"color\": {\"expr\": {\"Literal\": {\"Value\": \"'#52514E'\"}}}}}, \"fontSize\": {\"expr\": {\"Literal\": {\"Value\": \"9D\"}}}, \"gridlineShow\": {\"expr\": {\"Literal\": {\"Value\": \"false\"}}}, \"showAxisTitle\": {\"expr\": {\"Literal\": {\"Value\": \"false\"}}}}}], \"valueAxis\": [{\"properties\": {\"show\": {\"expr\": {\"Literal\": {\"Value\": \"true\"}}}, \"labelColor\": {\"solid\": {\"color\": {\"expr\": {\"Literal\": {\"Value\": \"'#52514E'\"}}}}}, \"fontSize\": {\"expr\": {\"Literal\": {\"Value\": \"9D\"}}}, \"gridlineColor\": {\"solid\": {\"color\": {\"expr\": {\"Literal\": {\"Value\": \"'#E1E0D9'\"}}}}}, \"showAxisTitle\": {\"expr\": {\"Literal\": {\"Value\": \"false\"}}}}}], \"legend\": [{\"properties\": {\"show\": {\"expr\": {\"Literal\": {\"Value\": \"true\"}}}, \"position\": {\"expr\": {\"Literal\": {\"Value\": \"'Top'\"}}}, \"showTitle\": {\"expr\": {\"Literal\": {\"Value\": \"false\"}}}, \"fontSize\": {\"expr\": {\"Literal\": {\"Value\": \"9D\"}}}, \"labelColor\": {\"solid\": {\"color\": {\"expr\": {\"Literal\": {\"Value\": \"'#52514E'\"}}}}}}}], \"labels\": [{\"properties\": {\"show\": {\"expr\": {\"Literal\": {\"Value\": \"true\"}}}, \"fontSize\": {\"expr\": {\"Literal\": {\"Value\": \"8D\"}}}, \"color\": {\"solid\": {\"color\": {\"expr\": {\"Literal\": {\"Value\": \"'#52514E'\"}}}}}}}]}, \"vcObjects\": {\"title\": [{\"properties\": {\"show\": {\"expr\": {\"Literal\": {\"Value\": \"true\"}}}, \"text\": {\"expr\": {\"Literal\": {\"Value\": \"'Outcomes by risk band \\u2014 fraud only'\"}}}, \"fontColor\": {\"solid\": {\"color\": {\"expr\": {\"Literal\": {\"Value\": \"'#0B0B0B'\"}}}}}, \"fontSize\": {\"expr\": {\"Literal\": {\"Value\": \"11D\"}}}, \"fontFamily\": {\"expr\": {\"Literal\": {\"Value\": \"'Segoe UI Semibold'\"}}}, \"alignment\": {\"expr\": {\"Literal\": {\"Value\": \"'left'\"}}}}}]}}}",
+          "filters": "[{\"name\": \"9ea81fdd6e3c\", \"expression\": {\"Column\": {\"Expression\": {\"SourceRef\": {\"Entity\": \"scored_transactions\"}}, \"Property\": \"is_fraud\"}}, \"filter\": {\"Version\": 2, \"From\": [{\"Name\": \"f\", \"Entity\": \"scored_transactions\", \"Type\": 0}], \"Where\": [{\"Condition\": {\"Comparison\": {\"ComparisonKind\": 0, \"Left\": {\"Column\": {\"Expression\": {\"SourceRef\": {\"Source\": \"f\"}}, \"Property\": \"is_fraud\"}}, \"Right\": {\"Literal\": {\"Value\": \"1L\"}}}}}]}, \"type\": \"Categorical\"}]"
+        }
+      ],
+      "config": "{\"objects\": {\"background\": [{\"properties\": {\"color\": {\"solid\": {\"color\": {\"expr\": {\"Literal\": {\"Value\": \"'#F2F1EC'\"}}}}}, \"transparency\": {\"expr\": {\"Literal\": {\"Value\": \"0D\"}}}}}], \"outspace\": [{\"properties\": {\"color\": {\"solid\": {\"color\": {\"expr\": {\"Literal\": {\"Value\": \"'#F2F1EC'\"}}}}}}}]}}",
+      "displayOption": 1,
+      "width": 1280,
+      "height": 720
+    }
+  ],
+  "config": "{\"version\": \"5.43\", \"themeCollection\": {\"baseTheme\": {\"name\": \"CY24SU10\", \"version\": \"5.55\", \"type\": 2}, \"customTheme\": {\"name\": \"FraudAudit\", \"version\": \"5.55\", \"type\": 1}}, \"activeSectionIndex\": 0, \"defaultDrillFilterOtherVisuals\": true, \"settings\": {\"useStylableVisualContainerHeader\": true, \"hideVisualContainerHeader\": true}}",
+  "layoutOptimization": 0,
+  "publicCustomVisuals": []
+}

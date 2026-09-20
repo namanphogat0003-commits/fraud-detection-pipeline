@@ -21,6 +21,7 @@ import numpy as np
 import pandas as pd
 
 from features import build_features
+from scoring import rank_order, risk_bands
 
 DEFAULT_DB = os.path.join("data", "processed", "fraud.db")
 BUNDLE_PATH = os.path.join("models", "api_bundle.joblib")
@@ -58,14 +59,17 @@ def main(db_path, queue_size):
     # order must specify a tie-break or "top K" is implementation-dependent -
     # different sort methods shift the reported catch rate by several percent.
     # At equal risk, the larger exposure is reviewed first.
-    out = out.sort_values(
-        ["fraud_score", "amount"], ascending=[False, False]
-    ).reset_index(drop=True)
+    #
+    # Ordering uses the UNROUNDED score. Sorting on the rounded `fraud_score`
+    # column, as this did previously, merges scores that differ in the seventh
+    # decimal into a tie and hands them to the amount tie-break - inventing
+    # ambiguity the model never produced, and disagreeing with the capacity
+    # analysis in advanced_models.py, which ranks on the raw score.
+    out = out.iloc[rank_order(scores, out["amount"].to_numpy())].reset_index(
+        drop=True)
     out["score_rank"] = np.arange(1, len(out) + 1)
     out["in_review_queue"] = (out["score_rank"] <= queue_size).astype(int)
-    out["risk_band"] = pd.cut(
-        out["fraud_score"], bins=[-0.001, 0.3, 0.7, 1.0],
-        labels=["low", "elevated", "high"])
+    out["risk_band"] = risk_bands(out["fraud_score"].to_numpy())
 
     # Outcome label makes the confusion matrix a one-click chart in Power BI.
     conditions = [

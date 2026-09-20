@@ -1,4 +1,30 @@
-# Power BI dashboard — build guide
+# Power BI dashboard
+
+## Quick path: generate the project, then save as .pbix
+
+```bash
+python src/score_batch.py        # produces both CSVs, if you have not already
+python dashboard/build_pbip.py   # writes FraudDashboard.pbip + model + report
+```
+
+Then open `dashboard/FraudDashboard.pbip` in Power BI Desktop, let it load the two
+CSVs, and **File → Save As → `dashboard/fraud_dashboard.pbix`**.
+
+`.pbix` cannot be generated directly — its data model is a compiled Analysis Services
+database that only the Power BI engine can write. PBIP is the supported text format
+Desktop reads and saves back out as `.pbix`, so the generator emits that instead. It
+builds the two tables with correct data types and **all eight DAX measures already
+defined**, plus a two-page report laid out as described below.
+
+The generator hardcodes absolute CSV paths for this machine. If you move the repo,
+re-run it.
+
+The rest of this file is the manual build guide, kept both as documentation of the
+design intent and so the dashboard can be rebuilt by hand if needed.
+
+---
+
+# Build guide
 
 The dashboard's job is to answer operational questions, not to restate model metrics.
 A fraud operations lead wants to know what the review queue caught, what it missed, and
@@ -108,3 +134,18 @@ rather than "Line chart of recovery".
 Save as `dashboard/fraud_dashboard.pbix`, and export a PNG or PDF of each page into
 `reports/figures/` so the dashboard is visible to anyone reading the repo on GitHub
 without opening Power BI.
+
+---
+
+## Rendered output
+
+Both pages are exported to PNG and referenced from the root README:
+
+```
+dashboard/review_queue.png       page 1 - what the review queue recovers
+dashboard/model_behaviour.png    page 2 - model behaviour and the hourly artifact
+```
+
+Regenerate them after any layout change: in Power BI Desktop, **File -> Export -> Export
+to PDF**, then split the two pages out as images. The `.pbix` itself is gitignored - it
+embeds the full data model and runs to about 38 MB.

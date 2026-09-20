@@ -17,9 +17,9 @@ report the first good-looking score, each was measured and removed in turn:
 | Track | What it removes | Best PR-AUC | Best model |
 |---|---|---|---|
 | A | nothing | **1.0000** | Random Forest |
-| B | origin-side drain signature | **0.7836** | Random Forest |
-| C | + destination-balance leak | **0.4229** | Random Forest |
-| D | + hour-of-day artifact | **0.1501** | Random Forest |
+| B | origin-side drain signature | **0.7841** | Random Forest |
+| C | + destination-balance leak | **0.4223** | Random Forest |
+| D | + hour-of-day artifact | **0.1497** | Random Forest |
 
 **Track D is the number to defend.** Track A is what a PaySim notebook that skips
 this analysis will proudly report.
@@ -56,29 +56,29 @@ real traffic, where night volume is a large fraction of daytime rather than 0.08
 
 | Model | Precision | Recall | F1 | PR-AUC | TP | FP | FN |
 |---|---|---|---|---|---|---|---|
-| Logistic Regression | 0.9998 | 0.9976 | 0.9987 | 0.9981 | 4,559 | 1 | 11 |
-| Random Forest | 1.0000 | 0.9998 | 0.9999 | 1.0000 | 4,569 | 0 | 1 |
+| Logistic Regression | 1.0000 | 0.9444 | 0.9714 | 0.9981 | 4,316 | 0 | 254 |
+| Random Forest | 1.0000 | 0.9985 | 0.9992 | 1.0000 | 4,563 | 0 | 7 |
 
 ## Track B - origin drain removed
 
 | Model | Precision | Recall | F1 | PR-AUC | TP | FP | FN |
 |---|---|---|---|---|---|---|---|
-| Logistic Regression | 0.2772 | 0.2534 | 0.2647 | 0.2319 | 1,158 | 3,020 | 3,412 |
-| Random Forest | 0.9109 | 0.6781 | 0.7775 | 0.7836 | 3,099 | 303 | 1,471 |
+| Logistic Regression | 0.1850 | 0.4466 | 0.2616 | 0.2319 | 2,041 | 8,990 | 2,529 |
+| Random Forest | 0.7366 | 0.7361 | 0.7363 | 0.7841 | 3,364 | 1,203 | 1,206 |
 
 ## Track C - destination leak removed
 
 | Model | Precision | Recall | F1 | PR-AUC | TP | FP | FN |
 |---|---|---|---|---|---|---|---|
-| Logistic Regression | 0.2184 | 0.2766 | 0.2441 | 0.1945 | 1,264 | 4,523 | 3,306 |
-| Random Forest | 0.6209 | 0.3383 | 0.4380 | 0.4229 | 1,546 | 944 | 3,024 |
+| Logistic Regression | 0.4336 | 0.1429 | 0.2149 | 0.1945 | 653 | 853 | 3,917 |
+| Random Forest | 0.8573 | 0.2024 | 0.3275 | 0.4223 | 925 | 154 | 3,645 |
 
 ## Track D - timing artifact removed (the honest floor)
 
 | Model | Precision | Recall | F1 | PR-AUC | TP | FP | FN |
 |---|---|---|---|---|---|---|---|
-| Logistic Regression | 0.1112 | 0.3348 | 0.1669 | 0.0837 | 1,530 | 12,229 | 3,040 |
-| Random Forest | 0.1409 | 0.6425 | 0.2311 | 0.1501 | 2,936 | 17,900 | 1,634 |
+| Logistic Regression | 0.1711 | 0.1361 | 0.1516 | 0.0837 | 622 | 3,014 | 3,948 |
+| Random Forest | 0.1618 | 0.3512 | 0.2215 | 0.1497 | 1,605 | 8,315 | 2,965 |
 
 ## Reading the gap
 
@@ -86,7 +86,7 @@ Logistic Regression collapses far faster than Random Forest across the tracks,
 which says the residual signal is non-linear - thresholds and interactions rather
 than monotone relationships.
 
-The distance from 1.0000 to 0.1501 is the real finding here.
+The distance from 1.0000 to 0.1497 is the real finding here.
 Most published PaySim work reports something near the top of that range without
 noting that the features encode the answer. The comparison itself - not the highest
 score - is what belongs on a resume.

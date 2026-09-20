@@ -1,0 +1,85 @@
+table dashboard_summary
+
+	column queue_size
+		dataType: int64
+		formatString: 0
+		lineageTag: 8de650bb-1471-41f1-b8ad-cbccecc3cbcb
+		summarizeBy: none
+		sourceColumn: queue_size
+
+		annotation SummarizationSetBy = Automatic
+
+	column pct_of_volume
+		dataType: double
+		formatString: 0.0000
+		lineageTag: e4c8d702-5a18-4bde-b845-832b31250d68
+		summarizeBy: none
+		sourceColumn: pct_of_volume
+
+		annotation SummarizationSetBy = Automatic
+
+	column frauds_caught
+		dataType: int64
+		formatString: 0
+		lineageTag: 69b1a5bb-d90c-4f90-898c-244bc90694ed
+		summarizeBy: sum
+		sourceColumn: frauds_caught
+
+		annotation SummarizationSetBy = Automatic
+
+	column frauds_total
+		dataType: int64
+		formatString: 0
+		lineageTag: 39460f23-6a51-45b3-af94-470534215874
+		summarizeBy: none
+		sourceColumn: frauds_total
+
+		annotation SummarizationSetBy = Automatic
+
+	column value_recovered
+		dataType: double
+		formatString: #,0
+		lineageTag: cb4a3cc2-5b6f-4160-af62-af235cbe7002
+		summarizeBy: sum
+		sourceColumn: value_recovered
+
+		annotation SummarizationSetBy = Automatic
+
+	column value_recovered_pct
+		dataType: double
+		formatString: 0.0
+		lineageTag: e84d7826-8d9f-45dd-8e73-eeaa096bb963
+		summarizeBy: none
+		sourceColumn: value_recovered_pct
+
+		annotation SummarizationSetBy = Automatic
+
+	column precision
+		dataType: double
+		formatString: 0.000
+		lineageTag: 942d0547-ae94-4655-a7b5-936de9575528
+		summarizeBy: none
+		sourceColumn: precision
+
+		annotation SummarizationSetBy = Automatic
+
+	column lift_vs_random
+		dataType: double
+		formatString: 0.0
+		lineageTag: 41ae6587-4a37-41bf-9e39-097837c3d9cd
+		summarizeBy: none
+		sourceColumn: lift_vs_random
+
+		annotation SummarizationSetBy = Automatic
+
+	partition dashboard_summary = m
+		mode: import
+		source =
+				let
+				    Source = Csv.Document(File.Contents("C:\Users\naman\Downloads\fraud-detection-pipeline\reports\dashboard_summary.csv"), [Delimiter=",", Columns=8, Encoding=65001, QuoteStyle=QuoteStyle.Csv]),
+				    Headers = Table.PromoteHeaders(Source, [PromoteAllScalars=true]),
+				    Typed = Table.TransformColumnTypes(Headers, {{"queue_size", Int64.Type}, {"pct_of_volume", type number}, {"frauds_caught", Int64.Type}, {"frauds_total", Int64.Type}, {"value_recovered", type number}, {"value_recovered_pct", type number}, {"precision", type number}, {"lift_vs_random", type number}})
+				in
+				    Typed
+
+	annotation PBI_ResultType = Table

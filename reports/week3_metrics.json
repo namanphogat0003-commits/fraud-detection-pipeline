@@ -2,14 +2,14 @@
   "results": [
     {
       "model": "XGBoost - Track A (all features)",
-      "threshold": 0.9642459154129028,
-      "precision": 0.999781181619256,
-      "recall": 0.999781181619256,
-      "f1": 0.999781181619256,
-      "tp": 4569,
-      "fp": 1,
-      "fn": 1,
-      "tn": 813943,
+      "threshold": 0.9973952770233154,
+      "precision": 1.0,
+      "recall": 0.9986870897155361,
+      "f1": 0.9993431136413401,
+      "tp": 4564,
+      "fp": 0,
+      "fn": 6,
+      "tn": 813944,
       "pr_auc": 0.9999977226670882,
       "roc_auc": 0.9999999870958171,
       "track": "Track A (all features)",
@@ -19,18 +19,20 @@
         "n_estimators": 300
       },
       "validation_pr_auc": 1.0,
-      "fit_seconds": 3.3
+      "threshold_selected_on": "validation",
+      "oracle_f1": 0.9998,
+      "fit_seconds": 8.6
     },
     {
       "model": "XGBoost - Track B (no origin drain)",
-      "threshold": 0.9983890056610107,
-      "precision": 0.9408633944411591,
-      "recall": 0.6962800875273523,
-      "f1": 0.8003018108651911,
-      "tp": 3182,
-      "fp": 200,
-      "fn": 1388,
-      "tn": 813744,
+      "threshold": 0.9822558164596558,
+      "precision": 0.7221070095396102,
+      "recall": 0.761925601750547,
+      "f1": 0.7414821124361158,
+      "tp": 3482,
+      "fp": 1340,
+      "fn": 1088,
+      "tn": 812604,
       "pr_auc": 0.788809326701935,
       "roc_auc": 0.9439172879457232,
       "track": "Track B (no origin drain)",
@@ -40,18 +42,20 @@
         "n_estimators": 300
       },
       "validation_pr_auc": 0.792,
-      "fit_seconds": 4.2
+      "threshold_selected_on": "validation",
+      "oracle_f1": 0.8003,
+      "fit_seconds": 12.2
     },
     {
       "model": "XGBoost - Track C (no destination leak)",
-      "threshold": 0.9904075264930725,
-      "precision": 0.7414307004470939,
-      "recall": 0.43544857768052514,
-      "f1": 0.5486628067273228,
-      "tp": 1990,
-      "fp": 694,
-      "fn": 2580,
-      "tn": 813250,
+      "threshold": 0.9991903901100159,
+      "precision": 0.9658869395711501,
+      "recall": 0.21684901531728665,
+      "f1": 0.3541815582558971,
+      "tp": 991,
+      "fp": 35,
+      "fn": 3579,
+      "tn": 813909,
       "pr_auc": 0.5411828557242967,
       "roc_auc": 0.9399666469347372,
       "track": "Track C (no destination leak)",
@@ -61,18 +65,20 @@
         "n_estimators": 300
       },
       "validation_pr_auc": 0.4021,
-      "fit_seconds": 3.3
+      "threshold_selected_on": "validation",
+      "oracle_f1": 0.5487,
+      "fit_seconds": 6.8
     },
     {
       "model": "XGBoost - Track D (no timing artifact)",
-      "threshold": 0.9860760569572449,
-      "precision": 0.4450651769087523,
-      "recall": 0.2614879649890591,
-      "f1": 0.3294279807029635,
-      "tp": 1195,
-      "fp": 1490,
-      "fn": 3375,
-      "tn": 812454,
+      "threshold": 0.9992077946662903,
+      "precision": 0.9911816578483245,
+      "recall": 0.12297592997811817,
+      "f1": 0.2188047498540004,
+      "tp": 562,
+      "fp": 5,
+      "fn": 4008,
+      "tn": 813939,
       "pr_auc": 0.32599133483392184,
       "roc_auc": 0.9035206669146276,
       "track": "Track D (no timing artifact)",
@@ -82,11 +88,13 @@
         "n_estimators": 300
       },
       "validation_pr_auc": 0.2136,
-      "fit_seconds": 3.9
+      "threshold_selected_on": "validation",
+      "oracle_f1": 0.3294,
+      "fit_seconds": 6.9
     },
     {
       "model": "IsolationForest (unsupervised, Track D)",
-      "threshold": 0.6722557373179351,
+      "threshold": 0.664781642398012,
       "precision": 0.04450620500646556,
       "recall": 0.5045951859956236,
       "f1": 0.08179770498199812,
@@ -96,7 +104,8 @@
       "tn": 764437,
       "pr_auc": 0.02770207447617948,
       "roc_auc": 0.7992381459110807,
-      "track": "Track D (no timing artifact)"
+      "track": "Track D (no timing artifact)",
+      "threshold_selected_on": "validation"
     }
   ],
   "shap_mean_abs": {
@@ -117,7 +126,10 @@
       "random_n": 0.5583288740326983,
       "random_amt_pct": 0.012217262013844602,
       "lift": 986.8813436054228,
-      "precision": 1.0
+      "precision": 1.0,
+      "break_even_review_cost": 8531120.92,
+      "net_value": 853062091.68,
+      "profitable": true
     },
     {
       "budget": 500,
@@ -128,7 +140,10 @@
       "random_n": 2.791644370163491,
       "random_amt_pct": 0.061086310069223,
       "lift": 590.8068272239307,
-      "precision": 0.994
+      "precision": 0.994,
+      "break_even_review_cost": 5107244.67,
+      "net_value": 2553372334.73,
+      "profitable": true
     },
     {
       "budget": 1000,
@@ -139,7 +154,10 @@
       "random_n": 5.583288740326982,
       "random_amt_pct": 0.122172620138446,
       "lift": 355.47411980962556,
-      "precision": 0.792
+      "precision": 0.792,
+      "break_even_review_cost": 3072905.08,
+      "net_value": 3072405084.83,
+      "profitable": true
     },
     {
       "budget": 5000,
@@ -150,7 +168,10 @@
       "random_n": 27.916443701634915,
       "random_amt_pct": 0.61086310069223,
       "lift": 137.40914997752614,
-      "precision": 0.2944
+      "precision": 0.2944,
+      "break_even_review_cost": 1187836.9,
+      "net_value": 5936684488.23,
+      "profitable": true
     },
     {
       "budget": 10000,
@@ -161,7 +182,10 @@
       "random_n": 55.83288740326983,
       "random_amt_pct": 1.22172620138446,
       "lift": 72.92647809060607,
-      "precision": 0.2027
+      "precision": 0.2027,
+      "break_even_review_cost": 630414.8,
+      "net_value": 6299147977.45,
+      "profitable": true
     },
     {
       "budget": 25000,
@@ -172,7 +196,10 @@
       "random_n": 139.58221850817458,
       "random_amt_pct": 3.054315503461151,
       "lift": 31.43503200600544,
-      "precision": 0.13024
+      "precision": 0.13024,
+      "break_even_review_cost": 271740.94,
+      "net_value": 6781023375.54,
+      "profitable": true
     },
     {
       "budget": 50000,
@@ -183,10 +210,14 @@
       "random_n": 279.16443701634915,
       "random_amt_pct": 6.108631006922302,
       "lift": 15.91868699250174,
-      "precision": 0.06946
+      "precision": 0.06946,
+      "break_even_review_cost": 137609.5,
+      "net_value": 6855474762.73,
+      "profitable": true
     }
   ],
   "fraud_exposure": 7075665125.639999,
+  "review_cost_assumed": 500,
   "break_even_review_cost": [
     8531120.9168,
     5107244.6694600005,

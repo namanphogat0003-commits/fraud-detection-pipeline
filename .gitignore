@@ -11,3 +11,11 @@ models/*.h5
 _to_delete/
 data/processed/*.csv
 models/*.joblib
+
+# Test scaffolding
+.pytest_cache/
+.pytest_tmp/
+
+# Power BI: the .pbix embeds the full data model (~38 MB).
+# The PBIP project alongside it is the text format kept in the repo.
+*.pbix

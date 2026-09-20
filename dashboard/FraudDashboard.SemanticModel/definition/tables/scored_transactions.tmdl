@@ -1,0 +1,204 @@
+table scored_transactions
+
+	measure 'Fraud Exposure' = ```
+			CALCULATE(SUM(scored_transactions[amount]), scored_transactions[is_fraud] = 1)
+			```
+		formatString: #,0,,"M"
+		lineageTag: 8e56f108-124e-41c2-8b78-5be774a53266
+
+	measure 'Value Recovered' = ```
+			CALCULATE(
+			    SUM(scored_transactions[amount]),
+			    scored_transactions[is_fraud] = 1,
+			    scored_transactions[in_review_queue] = 1
+			)
+			```
+		formatString: #,0,,"M"
+		lineageTag: e2cc5bc0-98aa-40fa-9864-65760a9bc419
+
+	measure 'Recovery Rate' = ```
+			DIVIDE([Value Recovered], [Fraud Exposure])
+			```
+		formatString: 0.0%
+		lineageTag: 7d1aaec7-f1b0-4751-b1c8-3e2495cfa2bb
+
+	measure 'Frauds Caught' = ```
+			CALCULATE(
+			    COUNTROWS(scored_transactions),
+			    scored_transactions[is_fraud] = 1,
+			    scored_transactions[in_review_queue] = 1
+			)
+			```
+		formatString: #,0
+		lineageTag: d694fd86-1707-48e3-a66c-a297288a13a4
+
+	measure 'Frauds Missed' = ```
+			CALCULATE(
+			    COUNTROWS(scored_transactions),
+			    scored_transactions[is_fraud] = 1,
+			    scored_transactions[in_review_queue] = 0
+			)
+			```
+		formatString: #,0
+		lineageTag: ae4903d5-5efe-44c2-977b-a097d4451d64
+
+	measure 'Queue Size' = ```
+			CALCULATE(COUNTROWS(scored_transactions), scored_transactions[in_review_queue] = 1)
+			```
+		formatString: #,0
+		lineageTag: f9742601-8a77-4fce-9e08-83f1313b4dde
+
+	measure 'Queue Precision' = ```
+			DIVIDE([Frauds Caught], [Queue Size])
+			```
+		formatString: 0.0%
+		lineageTag: 207fd7ef-7322-4d9f-997e-859cc711ecc6
+
+	measure 'Fraud Rate' = ```
+			DIVIDE(
+			    CALCULATE(COUNTROWS(scored_transactions), scored_transactions[is_fraud] = 1),
+			    COUNTROWS(scored_transactions)
+			)
+			```
+		formatString: 0.00%
+		lineageTag: c6ea1f62-89ea-4946-8060-6c0a380d0256
+
+	measure 'Transactions' = ```
+			COUNTROWS(scored_transactions)
+			```
+		formatString: #,0
+		lineageTag: 4180da77-bba8-4423-9cc6-c11c621da23b
+
+	column step
+		dataType: int64
+		formatString: 0
+		lineageTag: f9258180-5bb2-4cf8-b986-749a0a9018a1
+		summarizeBy: none
+		sourceColumn: step
+
+		annotation SummarizationSetBy = Automatic
+
+	column hour_of_day
+		dataType: int64
+		formatString: 0
+		lineageTag: 6b301f84-7f9b-41ba-a1e4-8495139c7f85
+		summarizeBy: none
+		sourceColumn: hour_of_day
+
+		annotation SummarizationSetBy = Automatic
+
+	column day
+		dataType: int64
+		formatString: 0
+		lineageTag: c9619163-05ff-4e3c-a0c1-0fe964c1d044
+		summarizeBy: none
+		sourceColumn: day
+
+		annotation SummarizationSetBy = Automatic
+
+	column type
+		dataType: string
+		lineageTag: 2dc87006-ddc4-4e72-ae07-ec5f46e9d4ae
+		summarizeBy: none
+		sourceColumn: type
+
+		annotation SummarizationSetBy = Automatic
+
+	column amount
+		dataType: double
+		formatString: #,0.00
+		lineageTag: 3ce91d2e-2d74-411a-9cf9-8656ebfe0df6
+		summarizeBy: sum
+		sourceColumn: amount
+
+		annotation SummarizationSetBy = Automatic
+
+	column nameDest
+		dataType: string
+		lineageTag: c43d48b5-3016-455f-b515-026df6cfa1cd
+		summarizeBy: none
+		sourceColumn: nameDest
+
+		annotation SummarizationSetBy = Automatic
+
+	column oldbalanceDest
+		dataType: double
+		formatString: #,0.00
+		lineageTag: 238daeaa-c3af-43b7-8467-7363d8edf165
+		summarizeBy: sum
+		sourceColumn: oldbalanceDest
+
+		annotation SummarizationSetBy = Automatic
+
+	column dest_txn_count
+		dataType: int64
+		formatString: 0
+		lineageTag: a5829ea9-6dd5-47a6-8c31-e7f50ccbc5d5
+		summarizeBy: none
+		sourceColumn: dest_txn_count
+
+		annotation SummarizationSetBy = Automatic
+
+	column is_fraud
+		dataType: int64
+		formatString: 0
+		lineageTag: 7d4271fe-abdc-4825-9df4-6fcb585e9c4d
+		summarizeBy: none
+		sourceColumn: is_fraud
+
+		annotation SummarizationSetBy = Automatic
+
+	column fraud_score
+		dataType: double
+		formatString: 0.0000
+		lineageTag: 2176114a-4512-42e2-8fcd-35defb591439
+		summarizeBy: none
+		sourceColumn: fraud_score
+
+		annotation SummarizationSetBy = Automatic
+
+	column score_rank
+		dataType: int64
+		formatString: 0
+		lineageTag: 53b96c22-aba2-447f-9347-bc4f9806294a
+		summarizeBy: none
+		sourceColumn: score_rank
+
+		annotation SummarizationSetBy = Automatic
+
+	column in_review_queue
+		dataType: int64
+		formatString: 0
+		lineageTag: 96f824f1-6e4b-4f04-a5c2-b57212aecac8
+		summarizeBy: none
+		sourceColumn: in_review_queue
+
+		annotation SummarizationSetBy = Automatic
+
+	column risk_band
+		dataType: string
+		lineageTag: e378080d-b8db-4216-808e-17d65ca5b2fe
+		summarizeBy: none
+		sourceColumn: risk_band
+
+		annotation SummarizationSetBy = Automatic
+
+	column outcome
+		dataType: string
+		lineageTag: 5fdec595-c30d-4668-973b-b22ff2d56ea0
+		summarizeBy: none
+		sourceColumn: outcome
+
+		annotation SummarizationSetBy = Automatic
+
+	partition scored_transactions = m
+		mode: import
+		source =
+				let
+				    Source = Csv.Document(File.Contents("C:\Users\naman\Downloads\fraud-detection-pipeline\data\processed\scored_transactions.csv"), [Delimiter=",", Columns=14, Encoding=65001, QuoteStyle=QuoteStyle.Csv]),
+				    Headers = Table.PromoteHeaders(Source, [PromoteAllScalars=true]),
+				    Typed = Table.TransformColumnTypes(Headers, {{"step", Int64.Type}, {"hour_of_day", Int64.Type}, {"day", Int64.Type}, {"type", type text}, {"amount", type number}, {"nameDest", type text}, {"oldbalanceDest", type number}, {"dest_txn_count", Int64.Type}, {"is_fraud", Int64.Type}, {"fraud_score", type number}, {"score_rank", Int64.Type}, {"in_review_queue", Int64.Type}, {"risk_band", type text}, {"outcome", type text}})
+				in
+				    Typed
+
+	annotation PBI_ResultType = Table

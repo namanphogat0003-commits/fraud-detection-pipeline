@@ -10,8 +10,10 @@ Outputs: prints key stats, saves plots, writes reports/eda_findings.md
 """
 
 import argparse
+import inspect
 import os
 import sqlite3
+from contextlib import closing
 
 import matplotlib
 matplotlib.use("Agg")
@@ -65,10 +67,18 @@ def q(conn, sql):
 
 
 def main(db_path, fig_dir, findings_path):
+    if not os.path.exists(db_path):
+        raise FileNotFoundError(
+            f"{db_path} not found - run `python src/data_prep.py` first.")
     os.makedirs(fig_dir, exist_ok=True)
     os.makedirs(os.path.dirname(findings_path) or ".", exist_ok=True)
-    conn = sqlite3.connect(db_path)
+    # closing() so an exception part-way through the analysis still releases the
+    # handle; on Windows a leaked one keeps the 700MB database file locked.
+    with closing(sqlite3.connect(db_path)) as conn:
+        _run(conn, fig_dir, findings_path)
 
+
+def _run(conn, fig_dir, findings_path):
     # 1. Class imbalance ----------------------------------------------------
     overall = q(conn, """
         SELECT COUNT(*) AS total,
@@ -136,9 +146,16 @@ def main(db_path, fig_dir, findings_path):
     fig, ax = plt.subplots(figsize=(7, 4.2))
     data = [sample.loc[sample.isFraud == 0, "amount"].clip(lower=1),
             sample.loc[sample.isFraud == 1, "amount"].clip(lower=1)]
-    # 'tick_labels' since Matplotlib 3.9; fall back for older versions.
-    label_kw = ("tick_labels" if matplotlib.__version__ >= "3.9" else "labels")
-    bp = ax.boxplot(data, vert=True, widths=0.45, patch_artist=True,
+    # 'labels' was renamed to 'tick_labels' in Matplotlib 3.9 and removed in
+    # 3.11. Ask the signature which one this build takes, rather than comparing
+    # version strings: the previous check, `matplotlib.__version__ >= "3.9"`,
+    # compares lexicographically, so "3.11.2" < "3.9" and the check silently
+    # inverted itself at 3.10 - passing the removed kwarg and raising TypeError.
+    label_kw = ("tick_labels"
+                if "tick_labels" in inspect.signature(ax.boxplot).parameters
+                else "labels")
+    # 'vert' is deprecated in 3.10; vertical is the default, so just omit it.
+    bp = ax.boxplot(data, widths=0.45, patch_artist=True,
                     showfliers=False, **{label_kw: ["Legitimate", "Fraud"]})
     for patch, colour in zip(bp["boxes"], [BLUE, ORANGE]):
         patch.set_facecolor(colour)
@@ -420,7 +437,6 @@ correlations.
 
     print(f"Plots saved to {fig_dir}/")
     print(f"Findings written to {findings_path}")
-    conn.close()
 
 
 if __name__ == "__main__":

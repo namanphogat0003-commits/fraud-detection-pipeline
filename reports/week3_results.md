@@ -12,21 +12,21 @@ period. Tuning against the test window would be a fourth form of leakage.
 
 | Model | Precision | Recall | F1 | PR-AUC | TP | FP | FN |
 |---|---|---|---|---|---|---|---|
-| XGBoost - Track A (all features) | 0.9998 | 0.9998 | 0.9998 | 1.0000 | 4,569 | 1 | 1 |
-| XGBoost - Track B (no origin drain) | 0.9409 | 0.6963 | 0.8003 | 0.7888 | 3,182 | 200 | 1,388 |
-| XGBoost - Track C (no destination leak) | 0.7414 | 0.4354 | 0.5487 | 0.5412 | 1,990 | 694 | 2,580 |
-| XGBoost - Track D (no timing artifact) | 0.4451 | 0.2615 | 0.3294 | 0.3260 | 1,195 | 1,490 | 3,375 |
+| XGBoost - Track A (all features) | 1.0000 | 0.9987 | 0.9993 | 1.0000 | 4,564 | 0 | 6 |
+| XGBoost - Track B (no origin drain) | 0.7221 | 0.7619 | 0.7415 | 0.7888 | 3,482 | 1,340 | 1,088 |
+| XGBoost - Track C (no destination leak) | 0.9659 | 0.2168 | 0.3542 | 0.5412 | 991 | 35 | 3,579 |
+| XGBoost - Track D (no timing artifact) | 0.9912 | 0.1230 | 0.2188 | 0.3260 | 562 | 5 | 4,008 |
 
 ### Against the Week 2 Random Forest
 
 | Track | Random Forest (Week 2) | XGBoost (Week 3) | Change |
 |---|---|---|---|
 | Track A (all features) | 1.0000 | 1.0000 | -0.0000 |
-| Track B (no origin drain) | 0.7836 | 0.7888 | +0.0052 |
-| Track C (no destination leak) | 0.4229 | 0.5412 | +0.1183 |
-| Track D (no timing artifact) | 0.1501 | 0.3260 | +0.1759 |
+| Track B (no origin drain) | 0.7841 | 0.7888 | +0.0047 |
+| Track C (no destination leak) | 0.4223 | 0.5412 | +0.1189 |
+| Track D (no timing artifact) | 0.1497 | 0.3260 | +0.1763 |
 
-Gradient boosting materially outperforms the Random Forest on the honest feature set: **0.1501 -> 0.3260** on Track D, a 2.2x improvement. So the residual signal after the artifacts are stripped is real but highly non-linear - it needs a model capable of deep interactions to reach, which is why the linear and shallower models found so little of it.
+Gradient boosting materially outperforms the Random Forest on the honest feature set: **0.1497 -> 0.3260** on Track D, a 2.2x improvement. So the residual signal after the artifacts are stripped is real but highly non-linear - it needs a model capable of deep interactions to reach, which is why the linear and shallower models found so little of it.
 
 This revises the Week 2 reading. The leakage was doing most of the work, but not all of it.
 
@@ -87,6 +87,11 @@ Break-even framing: at a budget of 1,000 reviews, the queue
 recovers 3,072,905 of fraud value per
 review performed. Any per-review cost below that figure makes the queue profitable -
 which is the form of the answer a fraud operations lead needs, rather than a PR-AUC.
+
+At the assumed review cost of **500** per transaction, net value is
+maximised at a queue of **50,000** reviews
+(+6,855,474,763), and every budget in the grid pays for itself.
+Re-run with `--review-cost` to test a different assumption.
 
 ## Honest summary
 

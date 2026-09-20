@@ -106,6 +106,20 @@ def temporal_split_step(df: pd.DataFrame, train_frac: float = 0.70) -> int:
     return int(cumulative[cumulative >= train_frac].index[0])
 
 
+def temporal_validation_split(train_df: pd.DataFrame, val_frac: float = 0.25):
+    """
+    Carve a validation window off the END of the training window, by step.
+
+    Used for anything that must be chosen without looking at test: the XGBoost
+    hyperparameters, and the decision threshold. Splitting on rows rather than
+    on the step range, for the same reason `temporal_split_step` does.
+    """
+    counts = train_df.groupby("step").size().sort_index()
+    cumulative = counts.cumsum() / len(train_df)
+    cut = int(cumulative[cumulative >= (1 - val_frac)].index[0])
+    return train_df[train_df["step"] <= cut], train_df[train_df["step"] > cut]
+
+
 def add_base_features(df: pd.DataFrame) -> pd.DataFrame:
     df = df.copy()
 

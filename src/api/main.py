@@ -19,6 +19,7 @@ Then open http://127.0.0.1:8000/docs for the interactive interface.
 """
 
 import os
+import sys
 from typing import Literal
 
 import joblib
@@ -27,6 +28,13 @@ import pandas as pd
 import shap
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel, Field
+
+# The banding and queue-ordering rules live in src/scoring.py so that this
+# service, the batch scorer and the capacity analysis cannot drift apart - they
+# had. `src` is one level up from this file; add it so the import works both
+# when uvicorn loads this as `src.api.main` and when it is run directly.
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+from scoring import RISK_BANDS, rank_order, risk_band  # noqa: E402
 
 BUNDLE_PATH = os.path.join("models", "api_bundle.joblib")
 
@@ -94,6 +102,11 @@ class ScoreResponse(BaseModel):
     caveat: str
 
 
+# The Literal above has to be spelled out for pydantic, so assert it matches the
+# shared definition rather than letting the two drift.
+assert set(RISK_BANDS) == {"low", "elevated", "high"}
+
+
 def build_feature_row(txn: Transaction, bundle) -> pd.DataFrame:
     """Derive the Track D feature vector from a raw transaction."""
     dest_count = int(bundle["dest_freq"].get(txn.nameDest, 0))
@@ -159,29 +172,62 @@ def score(txn: Transaction):
         reverse=True,
     )
 
-    band = "high" if probability >= 0.7 else "elevated" if probability >= 0.3 else "low"
-
     return ScoreResponse(
         fraud_probability=round(probability, 4),
-        risk_band=band,
+        risk_band=risk_band(probability),
         drivers=drivers[:4],
         model_version=f"track-d-xgboost @ {bundle['built_at']}",
         caveat=_caveat(bundle),
     )
 
 
+def build_feature_frame(transactions: list[Transaction], bundle) -> pd.DataFrame:
+    """Track D feature vectors for a batch, built in one pass.
+
+    The previous implementation constructed one DataFrame per transaction and
+    concatenated them, which costs a thousand DataFrame allocations on a
+    full-size request for no benefit.
+    """
+    freq = bundle["dest_freq"]
+    counts = [int(freq.get(t.nameDest, 0)) for t in transactions]
+    frame = pd.DataFrame({
+        "log_amount": np.log1p([t.amount for t in transactions]),
+        "is_transfer": [1 if t.type == "TRANSFER" else 0 for t in transactions],
+        "oldbalanceDest": [t.oldbalanceDest for t in transactions],
+        "dest_was_empty": [1 if t.oldbalanceDest == 0 else 0 for t in transactions],
+        "dest_txn_count": counts,
+        "dest_is_frequent": [1 if c >= 6 else 0 for c in counts],
+    })
+    return frame[bundle["features"]]
+
+
 @app.post("/score/batch")
 def score_batch(transactions: list[Transaction]):
     """Score up to 1000 transactions at once, ranked most-risky first."""
+    if not transactions:
+        raise HTTPException(
+            status_code=400, detail="Send at least one transaction.")
     if len(transactions) > 1000:
         raise HTTPException(
             status_code=413, detail="Send at most 1000 transactions per request.")
+
     bundle, _ = get_bundle()
-    X = pd.concat([build_feature_row(t, bundle) for t in transactions],
-                  ignore_index=True)
+    X = build_feature_frame(transactions, bundle)
     probs = bundle["model"].predict_proba(X)[:, 1]
-    ranked = sorted(
-        ({"index": i, "fraud_probability": round(float(p), 4)}
-         for i, p in enumerate(probs)),
-        key=lambda r: r["fraud_probability"], reverse=True)
-    return {"count": len(ranked), "scored": ranked}
+
+    # Same queue ordering as the batch scorer and the capacity analysis: ties on
+    # score go to the larger amount. Ranking on the rounded probability would
+    # invent ties the model did not produce.
+    amounts = np.array([t.amount for t in transactions], dtype=float)
+    order = rank_order(probs, amounts)
+
+    scored = [
+        {
+            "index": int(i),
+            "fraud_probability": round(float(probs[i]), 4),
+            "risk_band": risk_band(float(probs[i])),
+            "queue_rank": rank,
+        }
+        for rank, i in enumerate(order, start=1)
+    ]
+    return {"count": len(scored), "scored": scored}

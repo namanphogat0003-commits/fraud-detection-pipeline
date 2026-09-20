@@ -12,6 +12,11 @@ Method notes that matter more than the model choice:
   * Majority-class subsampling on the TRAINING set only. The test set keeps the
     real class balance, so the reported metrics are honest.
   * Destination-frequency features fitted on the training window only.
+  * The decision threshold is chosen on a validation window carved off the end
+    of the training period, never on test. Picking the F1-optimal threshold
+    against test labels - as this previously did - is an oracle no production
+    scorer has. PR-AUC is threshold-free and was never affected; precision,
+    recall and F1 were.
 
 Run with: python src/train.py [--db PATH]
 """
@@ -43,6 +48,7 @@ from features import (
     TRACK_D_FEATURES,
     build_features,
     subsample_majority,
+    temporal_validation_split,
 )
 
 DEFAULT_DB = os.path.join("data", "processed", "fraud.db")
@@ -65,7 +71,7 @@ def build_models():
     }
 
 
-def run_track(track_name, feature_cols, train_s, test_df, results):
+def run_track(track_name, feature_cols, fit_s, val_df, train_s, test_df, results):
     X_train = train_s[feature_cols]
     y_train = train_s["isFraud"].to_numpy()
     X_test = test_df[feature_cols]
@@ -77,21 +83,40 @@ def run_track(track_name, feature_cols, train_s, test_df, results):
     curves, rows = [], []
     for name, model in build_models().items():
         t0 = time.time()
+
+        # The operating threshold is chosen on a validation window carved out of
+        # the TRAINING period, never on test. Selecting it against test labels -
+        # as this did previously - uses an oracle no production scorer has, and
+        # inflates every precision/recall/F1 figure downstream. PR-AUC is
+        # threshold-free and was unaffected, which is how the error survived.
+        selector = build_models()[name]
+        selector.fit(fit_s[feature_cols], fit_s["isFraud"].to_numpy())
+        val_score = selector.predict_proba(val_df[feature_cols])[:, 1]
+        thr = best_f1_threshold(val_df["isFraud"].to_numpy(), val_score)
+
+        # The model that gets reported is refit on the full training window.
         model.fit(X_train, y_train)
         y_score = model.predict_proba(X_test)[:, 1]
         elapsed = time.time() - t0
 
-        thr = best_f1_threshold(y_test, y_score)
         m = score_metrics(y_test, y_score, threshold=thr, name=name)
         m["track"] = track_name
         m["train_seconds"] = round(elapsed, 1)
+        m["threshold_selected_on"] = "validation"
+        # Recorded for comparison only - never used to set the threshold.
+        m["oracle_f1"] = round(
+            score_metrics(y_test, y_score,
+                          threshold=best_f1_threshold(y_test, y_score))["f1"], 4)
         rows.append(m)
         curves.append((name, y_score))
 
-        print(f"\n  {name}  (fit+predict {elapsed:.1f}s, threshold {thr:.4f})")
+        print(f"\n  {name}  (fit+predict {elapsed:.1f}s, "
+              f"threshold {thr:.4f} chosen on validation)")
         print(f"    precision {m['precision']:.4f}   recall {m['recall']:.4f}   "
               f"F1 {m['f1']:.4f}   PR-AUC {m['pr_auc']:.4f}")
         print(f"    TP {m['tp']:,}  FP {m['fp']:,}  FN {m['fn']:,}")
+        print(f"    (an oracle test-set threshold would reach "
+              f"F1 {m['oracle_f1']:.4f})")
 
         slug = track_name.split()[1].lower().rstrip(":")
         joblib.dump(model, os.path.join(
@@ -127,7 +152,14 @@ def main(db_path):
     print(f"  training subsample: {len(train_s):,} rows "
           f"({100 * train_s.isFraud.mean():.2f}% fraud)")
 
+    # Threshold-selection window, carved off the end of the training period.
+    fit_df, val_df = temporal_validation_split(train_df)
+    fit_s = subsample_majority(fit_df, ratio=20)
+    print(f"  threshold selection: fit on {len(fit_s):,} rows, validate on "
+          f"{len(val_df):,} rows ({int(val_df.isFraud.sum()):,} fraud)")
+
     y_test = test_df["isFraud"].to_numpy()
+    last_step = int(test_df["step"].max())
 
     # --- rule baselines on the same test window -----------------------------
     baselines = [
@@ -150,7 +182,8 @@ def main(db_path):
     ]
     track_rows = {}
     for label, feats in tracks:
-        track_rows[label] = run_track(label, feats, train_s, test_df, results)
+        track_rows[label] = run_track(
+            label, feats, fit_s, val_df, train_s, test_df, results)
 
     a_rows = track_rows["Track A (all features)"]
     b_rows = track_rows["Track B (no origin drain)"]
@@ -173,7 +206,7 @@ def main(db_path):
     with open(RESULTS_MD, "w", encoding="utf-8") as fh:
         fh.write(f"""# Week 2 - Baseline models and a leakage audit
 
-Trained on steps 1-{split_step}, evaluated on steps {split_step + 1}-743 - a
+Trained on steps 1-{split_step}, evaluated on steps {split_step + 1}-{last_step} - a
 temporal split, so the model never sees a transaction that happens after the one
 it is scoring. The test window holds **{len(test_df):,} transactions** with
 **{int(test_df.isFraud.sum()):,} frauds** ({{:.4f}}%) at its real class balance.

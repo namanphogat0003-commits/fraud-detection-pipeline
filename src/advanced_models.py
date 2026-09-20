@@ -16,9 +16,16 @@ And then the question a fraud team would actually ask:
   4. At what score threshold is the model worth running, given that a missed
      fraud costs the transaction amount and a false alarm costs a review?
 
-Tuning note: hyperparameters are selected on a validation window carved out of
-the TRAINING period, never on the test window. Tuning against test would be a
-fourth form of leakage, and the whole point of this project is not doing that.
+Tuning note: both the hyperparameters AND the decision threshold are selected
+on a validation window carved out of the TRAINING period, never on the test
+window. Tuning against test would be a fourth form of leakage, and the whole
+point of this project is not doing that.
+
+(An earlier version made that claim for the hyperparameters while choosing the
+threshold against test labels. PR-AUC is threshold-free so the headline numbers
+were unaffected, but every precision/recall figure was optimistic. Each row now
+also carries `oracle_f1`: what F1 an impossible test-set-tuned threshold would
+have reached, so the size of that gap is visible rather than assumed.)
 
 Run with: python src/advanced_models.py [--db PATH] [--review-cost 500]
 """
@@ -41,9 +48,10 @@ from evaluate import (
     AXIS, BLUE, GRID, INK, INK_2, MUTED, ORANGE, SURFACE,
     best_f1_threshold, metrics_table, score_metrics,
 )
+from scoring import rank_order
 from features import (
     TRACK_A_FEATURES, TRACK_B_FEATURES, TRACK_C_FEATURES, TRACK_D_FEATURES,
-    build_features, subsample_majority,
+    build_features, subsample_majority, temporal_validation_split,
 )
 
 WEEK2_JSON = os.path.join("reports", "week2_metrics.json")
@@ -82,14 +90,6 @@ def load_week2_best():
     return best
 
 
-def temporal_validation_split(train_df, val_frac=0.25):
-    """Last `val_frac` of training ROWS, by step, becomes validation."""
-    counts = train_df.groupby("step").size().sort_index()
-    cumulative = counts.cumsum() / len(train_df)
-    cut = int(cumulative[cumulative >= (1 - val_frac)].index[0])
-    return train_df[train_df["step"] <= cut], train_df[train_df["step"] > cut]
-
-
 def tune_xgb(track_name, features, fit_df, val_df, pos_weight):
     from sklearn.metrics import average_precision_score
 
@@ -118,12 +118,9 @@ def capacity_analysis(y_true, y_score, amounts, budgets):
     This is where a weak model can still earn its keep: even poor ranking beats
     random selection, and the lift is the number an ops manager can act on.
     """
-    # The model produces many tied scores, so "top K" is ambiguous unless the
-    # tie-break is specified - different sort implementations can shift the
-    # reported catch rate by several percent. Ties are broken by amount
-    # descending: at equal risk, review the larger exposure first. lexsort takes
-    # its LAST key as primary.
-    order = np.lexsort((-amounts, -y_score))
+    # Ties are broken by amount descending - see src/scoring.rank_order, which
+    # is the single definition shared with the API and the batch scorer.
+    order = rank_order(y_score, amounts)
     fraud_total = amounts[y_true == 1].sum()
     n_fraud = int(y_true.sum())
     n_total = len(y_true)
@@ -209,13 +206,30 @@ def main(db_path, review_cost):
             **params, scale_pos_weight=pos_weight, eval_metric="aucpr",
             tree_method="hist", n_jobs=-1, random_state=42, verbosity=0)
         t0 = time.time()
+
+        # The operating threshold is chosen on the same validation window the
+        # hyperparameters were, never on test. The module claimed this in its
+        # docstring while reading test labels here, which inflated every
+        # precision/recall figure it reported. PR-AUC, being threshold-free,
+        # was correct throughout - which is how the error went unnoticed.
+        selector = XGBClassifier(
+            **params, scale_pos_weight=pos_weight, eval_metric="aucpr",
+            tree_method="hist", n_jobs=-1, random_state=42, verbosity=0)
+        selector.fit(fit_s[feats], fit_s["isFraud"])
+        thr = best_f1_threshold(
+            val_df["isFraud"].to_numpy(),
+            selector.predict_proba(val_df[feats])[:, 1])
+
         model.fit(train_s[feats], train_s["isFraud"])
         y_score = model.predict_proba(test_df[feats])[:, 1]
-        thr = best_f1_threshold(y_test, y_score)
         m = score_metrics(y_test, y_score, threshold=thr, name=f"XGBoost - {name}")
         m["track"] = name
         m["params"] = params
         m["validation_pr_auc"] = round(val_score, 4)
+        m["threshold_selected_on"] = "validation"
+        m["oracle_f1"] = round(
+            score_metrics(y_test, y_score,
+                          threshold=best_f1_threshold(y_test, y_score))["f1"], 4)
         m["fit_seconds"] = round(time.time() - t0, 1)
         rows.append(m)
         models[name] = model
@@ -223,7 +237,9 @@ def main(db_path, review_cost):
         slug = name.split()[1].lower()
         joblib.dump(model, os.path.join(MODEL_DIR, f"{slug}_xgboost.pkl"))
         print(f"    -> test PR-AUC {m['pr_auc']:.4f}  "
-              f"precision {m['precision']:.4f}  recall {m['recall']:.4f}")
+              f"precision {m['precision']:.4f}  recall {m['recall']:.4f}  "
+              f"(threshold {thr:.4f} from validation; oracle F1 "
+              f"{m['oracle_f1']:.4f})")
 
     # --- unsupervised: can fraud be found with no labels at all? ------------
     print("\nIsolationForest (unsupervised - trained on legitimate rows only):")
@@ -232,12 +248,24 @@ def main(db_path, review_cost):
     iso = IsolationForest(n_estimators=200, contamination=0.01,
                           n_jobs=-1, random_state=42)
     iso.fit(legit_train[TRACK_D_FEATURES])
+
+    # Normalise on the VALIDATION window's score range, and pick the threshold
+    # there too. Min-maxing on test is harmless for PR-AUC, which only depends
+    # on ordering, but it does let the test distribution set the scale that the
+    # threshold is then expressed in.
+    iso_val_raw = -iso.score_samples(val_df[TRACK_D_FEATURES])
+    lo, hi = float(iso_val_raw.min()), float(iso_val_raw.max())
+    span = hi - lo if hi > lo else 1.0
+
+    iso_val_norm = np.clip((iso_val_raw - lo) / span, 0.0, 1.0)
+    iso_thr = best_f1_threshold(val_df["isFraud"].to_numpy(), iso_val_norm)
+
     iso_score = -iso.score_samples(test_df[TRACK_D_FEATURES])
-    iso_norm = (iso_score - iso_score.min()) / (iso_score.max() - iso_score.min())
-    iso_thr = best_f1_threshold(y_test, iso_norm)
+    iso_norm = np.clip((iso_score - lo) / span, 0.0, 1.0)
     iso_m = score_metrics(y_test, iso_norm, threshold=iso_thr,
                           name="IsolationForest (unsupervised, Track D)")
     iso_m["track"] = "Track D (no timing artifact)"
+    iso_m["threshold_selected_on"] = "validation"
     print(f"    PR-AUC {iso_m['pr_auc']:.4f}  precision {iso_m['precision']:.4f}  "
           f"recall {iso_m['recall']:.4f}")
 
@@ -290,12 +318,42 @@ def main(db_path, review_cost):
     for r in cap_rows:
         be.append(r["caught_amt"] / r["budget"] if r["budget"] else 0.0)
 
+    # Apply the caller's actual review cost. `--review-cost` was accepted and
+    # documented but never used, so the module's fourth stated question - at
+    # what point is the model worth running - went unanswered on every run.
+    for r, break_even in zip(cap_rows, be):
+        r["break_even_review_cost"] = round(break_even, 2)
+        r["net_value"] = round(r["caught_amt"] - r["budget"] * review_cost, 2)
+        r["profitable"] = bool(break_even > review_cost)
+
+    profitable = [r for r in cap_rows if r["profitable"]]
+    best_budget_row = max(cap_rows, key=lambda r: r["net_value"])
+    print(f"\nAt a review cost of {review_cost:,.0f} per transaction:")
+    for r, break_even in zip(cap_rows, be):
+        verdict = "pays for itself" if r["profitable"] else "costs more than it recovers"
+        print(f"  review {r['budget']:>6,}: recovers {break_even:>12,.0f}/review, "
+              f"net {r['net_value']:>+15,.0f}  ({verdict})")
+    if profitable:
+        print(f"  -> largest profitable queue: {profitable[-1]['budget']:,} reviews; "
+              f"net value maximised at {best_budget_row['budget']:,} "
+              f"({best_budget_row['net_value']:+,.0f})")
+    else:
+        print("  -> no budget in the grid recovers more than it costs to review.")
+
+    if len(profitable) == len(cap_rows):
+        profit_phrase = "every budget in the grid pays for itself"
+    elif profitable:
+        profit_phrase = f"budgets up to {profitable[-1]['budget']:,} pay for themselves"
+    else:
+        profit_phrase = "no budget in the grid pays for itself"
+
     all_rows = rows + [iso_m]
     with open(RESULTS_JSON, "w", encoding="utf-8") as fh:
         json.dump({"results": all_rows,
                    "shap_mean_abs": {f: float(v) for f, v in shap_rank},
                    "capacity": cap_rows,
                    "fraud_exposure": float(fraud_total),
+                   "review_cost_assumed": review_cost,
                    "break_even_review_cost": be}, fh, indent=2)
 
     d_row = [r for r in rows if r["track"].startswith("Track D")][0]
@@ -443,6 +501,11 @@ Break-even framing: at a budget of {cap_rows[2]['budget']:,} reviews, the queue
 recovers {cap_rows[2]['caught_amt'] / cap_rows[2]['budget']:,.0f} of fraud value per
 review performed. Any per-review cost below that figure makes the queue profitable -
 which is the form of the answer a fraud operations lead needs, rather than a PR-AUC.
+
+At the assumed review cost of **{review_cost:,.0f}** per transaction, net value is
+maximised at a queue of **{best_budget_row['budget']:,}** reviews
+({best_budget_row['net_value']:+,.0f}), and {profit_phrase}.
+Re-run with `--review-cost` to test a different assumption.
 
 ## Honest summary
 

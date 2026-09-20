@@ -1,23 +1,29 @@
-# Week 1
-pandas
-numpy
-sqlalchemy
-matplotlib
-seaborn
-jupyter
+# Runtime dependencies, pinned to the versions the reported numbers were
+# produced under. A project whose argument is "these published results do not
+# reproduce" should be reproducible itself.
+#
+# Every package below is actually imported by something in src/. The previous
+# list also carried tensorflow, torch, lightgbm, optuna, imbalanced-learn,
+# jupyter, seaborn and sqlalchemy - none of which appear anywhere in the
+# codebase, and tensorflow alone is a ~600MB download on the first documented
+# setup step.
 
-# Week 2-3 (modeling)
-scikit-learn
-xgboost
-lightgbm
-imbalanced-learn
-shap
-optuna
+# Data and numerics
+pandas==3.0.5
+numpy==2.5.3
 
-# Week 3 (autoencoder) - pick one
-tensorflow
-# torch
+# Modelling (src/train.py, src/advanced_models.py)
+scikit-learn==1.9.1
+xgboost==3.4.1
+joblib==1.6.0
 
-# Week 4 (deployment)
-fastapi
-uvicorn
+# Explainability (src/advanced_models.py, src/api/main.py)
+shap==0.52.0
+
+# Plots (src/eda.py, src/evaluate.py)
+matplotlib==3.11.2
+
+# Scoring service (src/api/main.py)
+fastapi==0.141.1
+uvicorn==0.53.0
+pydantic==2.13.5
